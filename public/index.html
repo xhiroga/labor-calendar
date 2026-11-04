@@ -116,10 +116,6 @@ a { color: inherit }
 
   <form class="cond" id="cond" onsubmit="return false">
     <p class="gh">支払側</p>
-    <fieldset class="field"><legend>会社の種類</legend><div class="seg" data-k="corp">
-      <label><input type="radio" name="corp" id="c-llc" value="llc"><span>合同会社</span></label>
-      <label><input type="radio" name="corp" id="c-kk" value="kk"><span>株式会社</span></label>
-    </div></fieldset>
     <fieldset class="field" data-only="employee"><legend>従業員数</legend><div class="seg" data-k="big">
       <label><input type="radio" name="big" id="b-0" value="0"><span>50人以下</span></label>
       <label><input type="radio" name="big" id="b-1" value="1"><span>51人以上</span></label>
@@ -141,9 +137,8 @@ a { color: inherit }
     <fieldset class="field"><legend>働き方</legend><div class="seg" data-k="recv">
       <label><input type="radio" name="recv" id="k-e" value="permanent"><span>無期雇用</span></label>
       <label><input type="radio" name="recv" id="k-f" value="fixed"><span>有期雇用</span></label>
-      <label><input type="radio" name="recv" id="k-l" value="llcRep"><span>代表社員</span></label>
-      <label><input type="radio" name="recv" id="k-k" value="kkRep"><span>代表取締役</span></label>
       <label><input type="radio" name="recv" id="k-c" value="contractor"><span>業務委託</span></label>
+      <label><input type="radio" name="recv" id="k-o" value="officer"><span>役員 (代表・業務執行)</span></label>
     </div></fieldset>
     <fieldset class="field"><legend>入社・開始のタイミング</legend><div class="seg" data-k="startMode">
       <label><input type="radio" name="startMode" id="sm-0" value="0"><span>前年以前</span></label>
@@ -241,7 +236,7 @@ a { color: inherit }
       <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険の金額、次の仕事の収入は入れていません。12月の給与を受けてからの退職と、年136万円以下の短時間の人の退職は年末調整で精算し、それ以外の途中退職は確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
       <li>健康保険と厚生年金の資格は入社日に発生します。図の破線は、その確認の通知が受取側へ届く流れです。資格情報のお知らせは協会けんぽの場合の名称で、資格確認書はマイナ保険証を持たない人などに交付されます。</li>
       <li>翌年は、毎月のものを省いて、年に1回などの作業だけを出しています。金額が変わるものは金額を入れず、破線で示します。翌々年以降も同じ作業が毎年続く想定です。賃金が変わったときの月額変更届などは入れていません。納付書や納入通知書の時期は目安で、国民健康保険は自治体によって違います。</li>
-      <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。年度の途中の加入と脱退は月数で割っています。事務組合の委託費は別です。</li>
+      <li>役員は、代表権か業務執行権がある人を想定しています (代表社員、代表取締役、業務執行社員、業務執行取締役など)。肩書きではなく権限と働き方の実態で判定し、株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときと、雇用契約の執行役員は、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。年度の途中の加入と脱退は月数で割っています。事務組合の委託費は別です。</li>
     </ul>
     <p>労働保険の見出しのロゴは厚生労働省ホームページへ、社会保険の見出しの<a href="https://www.nenkin.go.jp/info/kihonjoho/mark.html">シンボルマーク (日本年金機構)</a>は日本年金機構ホームページへのリンクです。所得税・住民税の見出しのマークは、所得税の所轄を示すために<a href="https://www.nta.go.jp/chuijiko/tax_symbol.htm">税に関するシンボルマーク (国税庁)</a>を引用しています。画像は<a href="https://commons.wikimedia.org/wiki/File:%E5%9B%BD%E7%A8%8E%E5%BA%81.svg">Wikimedia Commons の File:国税庁.svg</a> (パブリックドメインと表記) です。このページは厚生労働省、国税庁、日本年金機構が作成したものではなく、これらの機関の公認を受けたものでも、見解を示すものでもありません。</p>
     <p>出典:
@@ -264,8 +259,9 @@ a { color: inherit }
       <a href="https://www.city.shinjuku.lg.jp/hoken/file04_03_00001.html">住民税の非課税と納期 (新宿区)</a> /
       <a href="https://www.tax.metro.tokyo.lg.jp/kazei/work/kojin_ji">個人事業税 (東京都主税局)</a> /
       <a href="https://jsite.mhlw.go.jp/ishikawa-roudoukyoku/content/contents/tokubetukanyuu_2syu_3syu_hokenritukaitehyou_r6.4.1.pdf">第二種特別加入保険料率表 (石川労働局)</a> /
-      <a href="https://www.mhlw.go.jp/hourei/doc/tsuchi/T260319S0080.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
-      <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/002225902.pdf">兼務役員雇用実態証明書 (福岡労働局)</a> /
+      <a href="https://www.mhlw.go.jp/content/12512000/001749394.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
+      <a href="https://jsite.mhlw.go.jp/ehime-roudoukyoku/roudoukyoku/gyoumu_naiyou/sounu/choshu/2030104.html">法人の役員の適用一覧表 (愛媛労働局)</a> /
+      <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/001850596.pdf">法人役員の雇用保険の適用 (福岡労働局)</a> /
       <a href="https://jsite.mhlw.go.jp/aomori-roudoukyoku/content/contents/002205685.pdf">中小事業主の特別加入 (青森労働局)</a> /
       <a href="https://www.nenkin.go.jp/service/kounen/tekiyo/hihokensha1/20150422.html">資格取得の手続き (日本年金機構)</a> /
       <a href="https://www.nenkin.go.jp/service/kounen/tekiyo/hihokensha2/20201204.html">標準報酬等の決定の通知 (日本年金機構)</a> /
@@ -421,7 +417,7 @@ function calc(s) {
 const $ = id => document.getElementById(id);
 const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
 const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
-const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, jt: 1, cur: 0, exp: 20, src: 1, vat: 0, tk: 0, fil: 0, labTab: 'both' };
+const state = { recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, jt: 1, cur: 0, exp: 20, src: 1, vat: 0, tk: 0, fil: 0, labTab: 'both' };
 const LAB_TABS = {
   employee: [['both', '雇用保険 + 労災保険'], ['rosai', '労災保険のみ']],
   officer: [['officerNone', '加入なし'], ['tokubetsu1', '労災保険に特別加入']],
@@ -441,11 +437,10 @@ const matchLab = s => s.kind === 'employee' ? (s.hours >= 20 ? 'both' : 'rosai')
 function rules(s, k) {
   const emp = s.kind !== 'contractor', officer = s.kind === 'officer', year = paidYear(s);
   const hours = { 30: '30時間以上', 20: '20〜30時間', 0: '20時間未満' }[s.hours];
-  const rep = s.corp === 'llc' ? '代表社員' : '代表取締役';
-  const work = { employee: s.recv === 'fixed' ? '有期雇用' : '無期雇用', officer: rep, contractor: '業務委託' }[s.kind];
+  const work = { employee: s.recv === 'fixed' ? '有期雇用' : '無期雇用', officer: '役員', contractor: '業務委託' }[s.kind];
   const isEmp = { t: '雇われて給与をもらっている', ok: s.kind === 'employee', now: work };
   const isPaid = { t: officer ? '役員報酬をもらっている' : '雇われて給与をもらっている', ok: emp, now: work };
-  const isOfficer = { t: `${rep}である (代表権があるので労働者にあたらない)`, ok: officer, now: work };
+  const isOfficer = { t: '役員である (代表権か業務執行権があるので労働者にあたらない)', ok: officer, now: work };
   const isCon = { t: '業務委託で報酬をもらっている', ok: !emp, now: work };
   const R = {
     adjust: { mode: 'all', items: [isPaid, { t: '年間の給与が2,000万円以下', ok: year <= 20000000, now: yen(year) },
@@ -886,8 +881,6 @@ function render() {
 function syncSeg() {
   $('endM').value = state.endSel;
   [...$('endM').options].forEach(o => { o.disabled = Number(o.value) < state.startM; });
-  $('k-l').disabled = state.corp !== 'llc';
-  $('k-k').disabled = state.corp !== 'kk';
   document.querySelectorAll('.seg').forEach(g => {
     const v = String(['toku', 'jt'].includes(g.dataset.k) && !small(state) ? 0 : state[g.dataset.k]);
     g.querySelectorAll('input').forEach(i => { i.checked = i.value === v; });
@@ -904,11 +897,7 @@ function clampEnd() {
 function setSeg(k, v) {
   if (k === 'recv') {
     state.recv = v;
-    state.kind = v === 'llcRep' || v === 'kkRep' ? 'officer' : v === 'contractor' ? v : 'employee';
-  } else if (k === 'corp') {
-    state.corp = v;
-    // 会社の種類に無い肩書きを選んでいたら、その会社の代表の肩書きに読み替える
-    if (state.kind === 'officer') state.recv = v === 'llc' ? 'llcRep' : 'kkRep';
+    state.kind = v === 'officer' || v === 'contractor' ? v : 'employee';
   } else if (k === 'startMode') {
     state.startMode = Number(v);
     state.startM = state.startMode ? state.startSel : 0;
@@ -942,8 +931,8 @@ $('labTabs').addEventListener('click', e => {
 
 // 条件を URL に写す。既定値と同じ項目は書かない
 const QUERY = [
-  ['corp', 'corp', v => ['llc', 'kk'].includes(v) ? v : null],
-  ['work', 'recv', v => ['permanent', 'fixed', 'llcRep', 'kkRep', 'contractor'].includes(v) ? v : null],
+  // llcRep と kkRep は統合前の値。X に流れたリンクが雇用の図にならないよう役員として開く
+  ['work', 'recv', v => ['llcRep', 'kkRep'].includes(v) ? 'officer' : ['permanent', 'fixed', 'officer', 'contractor'].includes(v) ? v : null],
   ['start', 'startM', v => intIn(v, 0, 12)],
   ['end', 'endM', v => intIn(v, 0, 12)],
   ['amt', 'amt', v => intIn(v, 0, 2000000)],
@@ -973,10 +962,7 @@ function readQuery() {
     const v = parse(q.get(name));
     if (v !== null) state[key] = v;
   });
-  // 肩書きと会社の種類が食い違うときは、肩書きに合わせる
-  if (state.recv === 'llcRep') state.corp = 'llc';
-  if (state.recv === 'kkRep') state.corp = 'kk';
-  state.kind = state.recv === 'llcRep' || state.recv === 'kkRep' ? 'officer' : state.recv === 'contractor' ? 'contractor' : 'employee';
+  state.kind = state.recv === 'officer' || state.recv === 'contractor' ? state.recv : 'employee';
   state.startMode = state.startM ? 1 : 0;
   if (state.startM) state.startSel = state.startM;
   state.endMode = state.endM ? 1 : 0;
