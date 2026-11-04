@@ -60,6 +60,7 @@ section { display: grid; gap: 10px; min-width: 0 }
 .head, .month { display: grid; grid-template-columns: 34px 1fr }
 .head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--panel); border-bottom: 1px solid var(--fg) }
 .cols { grid-column: 2; display: grid; grid-template-columns: 34px repeat(3, 1fr); font-size: 12px; font-weight: 700; text-align: center; padding-block: 6px }
+.cols span { word-break: keep-all }
 .cols span:first-child { visibility: hidden }
 .ico { width: 14px; height: 14px; margin-right: 4px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round }
 .month { border-top: 1px solid var(--rule) }
@@ -519,7 +520,7 @@ function seq(cols, byMonth, next = {}, repeats = false) {
   const months = MONTHS.map(m => block(byMonth, m)).join('');
   const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m)).join('');
   const tail = nextMonths ? `<div class="sep">翌年（毎月分除く）</div>${nextMonths}${repeats ? '<div class="sep">翌々年以降も同じ作業が毎年続きます</div>' : ''}` : '';
-  return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c.split('・')[0]] || ''}${c}</span>`).join('')}</div></div>${months}${tail}</div>`;
+  return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c.split('・')[0]] || ''}${c.replace('・', '・<wbr>')}</span>`).join('')}</div></div>${months}${tail}</div>`;
 }
 function add(map, m, sort, e) { (map[m] = map[m] || []).push({ ...e, sort }); }
 // 13 月以降は翌年のブロックへ
