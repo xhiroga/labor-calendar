@@ -167,6 +167,10 @@ a { color: inherit }
       <label><input type="radio" name="src" id="s-1" value="1"><span>源泉徴収の対象 (デザイン料・原稿料など)</span></label>
       <label><input type="radio" name="src" id="s-0" value="0"><span>対象外</span></label>
     </div></fieldset>
+    <fieldset class="field" data-only="employee officer"><legend>年末調整のあとの確定申告</legend><div class="seg" data-k="fil">
+      <label><input type="radio" name="fil" id="fil-0" value="0"><span>しない</span></label>
+      <label><input type="radio" name="fil" id="fil-1" value="1"><span>する (医療費控除、給与以外の所得が20万円超など)</span></label>
+    </div></fieldset>
     <fieldset class="field" data-only="officer contractor"><legend>労災保険の特別加入</legend><div class="seg" data-k="tk">
       <label><input type="radio" name="tk" id="tk-0" value="0"><span>しない</span></label>
       <label><input type="radio" name="tk" id="tk-1" value="1"><span>する</span></label>
@@ -342,7 +346,7 @@ function calc(s) {
 const $ = id => document.getElementById(id);
 const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
 const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
-const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 1, toku: 0, exp: 20, src: 1, tk: 0, tab: 'adjust', labTab: 'both' };
+const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 1, toku: 0, exp: 20, src: 1, tk: 0, fil: 0, tab: 'adjust', labTab: 'both' };
 const TABS = {
   employee: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
   officer: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
@@ -474,6 +478,7 @@ function render() {
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
   if (s.tab === 'adjust') {
+    if (s.fil && !c.start) add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
     if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
     if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
   } else if (!c.start) {
@@ -511,7 +516,7 @@ function render() {
   if (!c.end) {
     if (s.tab === 'adjust') {
       [taxNext, taxAfter].forEach(map => {
-        add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告 (医療費控除などを使う人だけ)', 0, 1, { paper: true }));
+        if (s.fil) add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
         add(map, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
         add(map, 12, 26, ev('12月', 'co', 'me', '年末調整で過不足を精算', 0, 1, { paper: true }));
       });
@@ -540,7 +545,7 @@ function render() {
     : ` ${c.end}月末で終了するので、最後の支払いは${c.end === 12 ? '翌年1' : c.end + 1}月です。`;
 
   if (!c.end) $('taxNote').textContent += s.tab === 'adjust'
-    ? ' 年末調整で精算するので確定申告は原則いりません。医療費控除を使うときや、給与以外の所得が20万円を超えるときは3月に申告します。'
+    ? (s.fil ? ' 年末調整で精算したうえで、翌年3月に確定申告もします。医療費控除の還付や給与以外の所得の税額は図の金額に入れていません。' : ' 年末調整で精算するので確定申告はしません。')
     : ' 翌年以降も毎年3月に前年分を確定申告します。';
 
   // 労働保険
@@ -738,6 +743,7 @@ const QUERY = [
   ['exp', 'exp', v => intIn(v, 0, 90)],
   ['src', 'src', v => intIn(v, 0, 1)],
   ['tk', 'tk', v => intIn(v, 0, 1)],
+  ['fil', 'fil', v => intIn(v, 0, 1)],
 ];
 function intIn(v, min, max) {
   if (!/^\d+$/.test(v)) return null;
