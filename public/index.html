@@ -90,7 +90,9 @@ section { display: grid; gap: 10px; min-width: 0 }
 .lab em { font-style: normal; color: var(--muted) }
 .pay { color: var(--pay) } .gov { color: var(--gov) }
 .hlogo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
-.logo { display: inline-flex; background: #fff; padding: 2px 4px; border-radius: 2px }
+.logo { display: inline-flex; border-radius: 2px }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo { background: #fff; padding: 2px 4px } }
+:root[data-theme="dark"] .logo { background: #fff; padding: 2px 4px }
 .logo:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
 .none { padding: 20px 14px; font-size: 14px; margin: 0 }
 .sep { padding: 5px 10px; font-size: 12px; font-weight: 700; background: var(--soft); border-top: 2px solid var(--fg) }
@@ -196,7 +198,7 @@ a { color: inherit }
     <div id="seqSoc"></div>
   </section>
   <section>
-    <h2 class="hlogo"><a class="logo" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/hoken/roudouhoken21/index.html" target="_blank" rel="noopener" title="厚生労働省ホームページ「労働保険年度更新に係るお知らせ」へ"><img src="mhlw-symbol.gif" height="28" alt="厚生労働省ホームページ「労働保険年度更新に係るお知らせ」へ"></a>労働保険</h2>
+    <h2 class="hlogo"><a class="logo" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/hoken/roudouhoken21/index.html" target="_blank" rel="noopener" title="厚生労働省ホームページ「労働保険年度更新に係るお知らせ」へ"><img src="mhlw-symbol.png" height="28" alt="厚生労働省ホームページ「労働保険年度更新に係るお知らせ」へ"></a>労働保険</h2>
     <div class="tabs" role="tablist" id="labTabs"></div>
     <div class="why" id="labWhy"></div>
     <p class="note" id="labNote"></p>
