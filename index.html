@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>労働カレンダー</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
+<style>
+[hidden] { display: none !important }
+body { margin: 0; font-size: 14px }
+img { max-width: 100% }
+/* Layout: 帳票の罫線に載せた縦 3 列のシーケンス図を、月ごとのブロックで 12 段積む */
+:root {
+  --bg: #f4f8f5; --panel: #ffffff; --fg: #14241e; --muted: #557066; --rule: #bdd3c7; --soft: #e3eee8;
+  --pay: #0b6b4f; --gov: #b5322a; --ins: #c98a12; --labor: #3b6ea8;
+  --body: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --num: "BIZ UDGothic", "Hiragino Sans", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1a16; --panel: #16241f; --fg: #e4efe9; --muted: #93aca2; --rule: #36514a; --soft: #20332c;
+  --pay: #5ccfa6; --gov: #f0857c; --ins: #e6b450; --labor: #84aee0; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1a16; --panel: #16241f; --fg: #e4efe9; --muted: #93aca2; --rule: #36514a; --soft: #20332c;
+  --pay: #5ccfa6; --gov: #f0857c; --ins: #e6b450; --labor: #84aee0; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); line-height: 1.6;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.wrap { max-width: 880px; margin: 0 auto; display: grid; gap: 32px }
+h1 { font-size: 26px; margin: 0; text-wrap: balance }
+h2 { font-size: 19px; margin: 0 }
+.num { font-family: var(--num); font-variant-numeric: tabular-nums }
+
+.cond { background: var(--panel); border: 1px solid var(--rule); display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+.field { padding: 12px 14px; border: 0; margin: 0; outline: 1px solid var(--soft); min-width: 0; display: grid; gap: 6px; align-content: start }
+.gh { grid-column: 1 / -1; margin: 0; padding: 6px 14px; font-size: 13px; font-weight: 700; background: var(--soft) }
+.field > legend, .field > label { float: left; padding: 0; font-size: 12px; color: var(--muted) }
+.field > legend + * { clear: both }
+.seg { display: flex; flex-wrap: wrap; gap: 4px }
+.seg label { cursor: pointer }
+.seg input { position: absolute; opacity: 0; pointer-events: none }
+.seg span { display: block; padding: 5px 10px; border: 1px solid var(--rule); font-size: 13px }
+.seg input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg) }
+.seg label:has(input:disabled) { cursor: not-allowed }
+.seg input:disabled + span { color: var(--muted); border-style: dashed; opacity: .55; text-decoration: line-through }
+.seg input:focus-visible + span, input[type=number]:focus-visible, .tab:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
+select:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
+select, input[type=number] { width: 100%; font: 16px var(--num); padding: 5px 8px; background: var(--bg); color: var(--fg); border: 1px solid var(--rule) }
+
+.summary { display: grid; gap: 8px }
+.bar { display: flex; height: 22px; background: var(--soft) }
+.bar i { display: block; min-width: 0 }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; margin: 0; padding: 0; list-style: none }
+.legend li { display: flex; align-items: center; gap: 6px }
+.legend b { width: 10px; height: 10px; display: inline-block }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 2px solid var(--fg) }
+.tab { font: inherit; font-size: 14px; color: var(--muted); background: transparent; border: 0; padding: 7px 14px; cursor: pointer }
+.tab[aria-selected=true] { background: var(--fg); color: var(--bg); font-weight: 700 }
+
+section { display: grid; gap: 10px; min-width: 0 }
+.note { font-size: 13px; color: var(--muted); margin: 0; max-width: 65ch }
+.seq { background: var(--panel); border: 1px solid var(--rule) }
+.head, .month { display: grid; grid-template-columns: 34px 1fr }
+.head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--panel); border-bottom: 1px solid var(--fg) }
+.cols { grid-column: 2; display: grid; grid-template-columns: 34px repeat(3, 1fr); font-size: 12px; font-weight: 700; text-align: center; padding-block: 6px }
+.cols span:first-child { visibility: hidden }
+.ico { width: 14px; height: 14px; margin-right: 4px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round }
+.month { border-top: 1px solid var(--rule) }
+.head + .month { border-top: 0 }
+.mlabel { font: 700 13px var(--num); text-align: center; padding-top: 8px; background: var(--soft) }
+.rows { display: grid; min-width: 0 }
+.row { display: grid; grid-template-columns: 34px 1fr; min-height: 48px }
+.row.empty { min-height: 18px }
+.date { font: 11px var(--num); color: var(--muted); padding-top: 24px; text-align: right; padding-right: 4px }
+.lanes { position: relative; background-image:
+  linear-gradient(var(--rule), var(--rule)), linear-gradient(var(--rule), var(--rule)), linear-gradient(var(--rule), var(--rule));
+  background-size: 1px 100%; background-repeat: no-repeat; background-position: 16.667% 0, 50% 0, 83.333% 0 }
+.arr { position: absolute; bottom: 9px; height: 2px; background: currentColor }
+.arr::after { content: ""; position: absolute; top: -4px; border-block: 5px solid transparent }
+.arr.r::after { right: 0; border-left: 8px solid currentColor }
+.arr.l::after { left: 0; border-right: 8px solid currentColor }
+.arr.paper { background: none; border-top: 2px dashed currentColor; height: 0 }
+.arr.paper::after { top: -6px }
+.lab { position: absolute; bottom: 13px; text-align: center; font-size: 11.5px; line-height: 1.25; padding-inline: 8px; color: var(--fg) }
+.lab .num { font-weight: 700 }
+.lab em { font-style: normal; color: var(--muted) }
+.pay { color: var(--pay) } .gov { color: var(--gov) }
+.none { padding: 20px 14px; font-size: 14px; margin: 0 }
+.sep { padding: 5px 10px; font-size: 12px; font-weight: 700; background: var(--soft); border-top: 2px solid var(--fg) }
+.why { background: var(--panel); border: 1px solid var(--rule); padding: 12px 14px; display: grid; gap: 8px; font-size: 13px }
+.why p { margin: 0 }
+.why .verdict { font-weight: 700 }
+.why ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px }
+.why li { display: grid; grid-template-columns: 1.4em 1fr; min-width: 0 }
+.why em { font-style: normal; color: var(--muted) }
+.why .sub { color: var(--muted); font-size: 12px }
+.mk { font-family: var(--num); font-weight: 700 }
+.mk.yes { color: var(--pay) } .mk.no { color: var(--gov) } .mk.na { color: var(--muted) }
+.tab .here { font-size: 11px; margin-left: 6px; font-weight: 400 }
+
+details { font-size: 13px; color: var(--muted) }
+summary { cursor: pointer }
+details ul { padding-left: 18px; margin: 8px 0 }
+a { color: inherit }
+@media (max-width: 480px) { .lab { font-size: 10.5px; padding-inline: 2px } h1 { font-size: 22px } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>労働カレンダー</h1>
+
+  <form class="cond" id="cond" onsubmit="return false">
+    <p class="gh">支払側</p>
+    <fieldset class="field"><legend>会社の種類</legend><div class="seg" data-k="corp">
+      <label><input type="radio" name="corp" id="c-llc" value="llc"><span>合同会社</span></label>
+      <label><input type="radio" name="corp" id="c-kk" value="kk"><span>株式会社</span></label>
+    </div></fieldset>
+    <fieldset class="field" data-only="employee"><legend>従業員数</legend><div class="seg" data-k="big">
+      <label><input type="radio" name="big" id="b-1" value="1"><span>51人以上</span></label>
+      <label><input type="radio" name="big" id="b-0" value="0"><span>50人以下</span></label>
+    </div></fieldset>
+    <fieldset class="field" data-only="employee officer"><legend>源泉所得税の納期</legend><div class="seg" data-k="toku">
+      <label><input type="radio" name="toku" id="t-0" value="0"><span>毎月</span></label>
+      <label><input type="radio" name="toku" id="t-1" value="1"><span>納期の特例 (年2回)</span></label>
+    </div></fieldset>
+    <p class="gh">受取側</p>
+    <fieldset class="field"><legend>働き方</legend><div class="seg" data-k="recv">
+      <label><input type="radio" name="recv" id="k-e" value="permanent"><span>無期雇用</span></label>
+      <label><input type="radio" name="recv" id="k-f" value="fixed"><span>有期雇用</span></label>
+      <label><input type="radio" name="recv" id="k-l" value="llcRep"><span>代表社員</span></label>
+      <label><input type="radio" name="recv" id="k-k" value="kkRep"><span>代表取締役</span></label>
+      <label><input type="radio" name="recv" id="k-c" value="contractor"><span>業務委託</span></label>
+    </div></fieldset>
+    <fieldset class="field"><legend>入社・開始のタイミング</legend><div class="seg" data-k="startMode">
+      <label><input type="radio" name="startMode" id="sm-0" value="0"><span>前年以前</span></label>
+      <label><input type="radio" name="startMode" id="sm-1" value="1"><span>今年</span></label>
+    </div>
+    <div id="startWrap"><select id="startM" aria-label="開始月">
+      <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+    </select></div></fieldset>
+    <div class="field"><label for="amt">月額 (円)</label><input type="number" id="amt" min="0" max="2000000" step="10000"></div>
+    <fieldset class="field"><legend>年齢</legend><div class="seg" data-k="age">
+      <label><input type="radio" name="age" id="a-y" value="0"><span>40歳未満</span></label>
+      <label><input type="radio" name="age" id="a-o" value="1"><span>40〜64歳</span></label>
+    </div></fieldset>
+    <fieldset class="field" data-only="employee"><legend>週の所定労働時間</legend><div class="seg" data-k="hours">
+      <label><input type="radio" name="hours" id="h-30" value="30"><span>30時間以上</span></label>
+      <label><input type="radio" name="hours" id="h-20" value="20"><span>20〜30時間</span></label>
+      <label><input type="radio" name="hours" id="h-0" value="0"><span>20時間未満</span></label>
+    </div></fieldset>
+    <div class="field" data-only="contractor"><label for="exp">経費 (売上に対する %)</label><input type="number" id="exp" min="0" max="90" step="5"></div>
+    <fieldset class="field" data-only="contractor"><legend>報酬の種類</legend><div class="seg" data-k="src">
+      <label><input type="radio" name="src" id="s-1" value="1"><span>源泉徴収の対象 (デザイン料・原稿料など)</span></label>
+      <label><input type="radio" name="src" id="s-0" value="0"><span>対象外</span></label>
+    </div></fieldset>
+    <fieldset class="field" data-only="officer contractor"><legend>労災保険の特別加入</legend><div class="seg" data-k="tk">
+      <label><input type="radio" name="tk" id="tk-0" value="0"><span>しない</span></label>
+      <label><input type="radio" name="tk" id="tk-1" value="1"><span>する</span></label>
+    </div></fieldset>
+  </form>
+
+  <div class="summary" aria-live="polite">
+    <h2 id="sumTitle"></h2>
+    <div class="bar" id="bar"></div>
+    <ul class="legend" id="legend"></ul>
+  </div>
+
+  <section>
+    <h2>所得税</h2>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="why" id="taxWhy"></div>
+    <p class="note" id="taxNote"></p>
+    <div id="seqTax"></div>
+  </section>
+  <section>
+    <h2>労働保険</h2>
+    <div class="tabs" role="tablist" id="labTabs"></div>
+    <div class="why" id="labWhy"></div>
+    <p class="note" id="labNote"></p>
+    <div id="seqLab"></div>
+  </section>
+  <section>
+    <h2>社会保険</h2>
+    <p class="note" id="socNote"></p>
+    <div id="seqSoc"></div>
+  </section>
+
+  <div>
+    <ul class="legend">
+      <li><b class="pay" style="background:currentColor"></b>受取側へのお金</li>
+      <li><b class="gov" style="background:currentColor"></b>国・自治体へのお金</li>
+      <li>破線: 書類</li>
+      <li>矢印の濃さ: 額面に対する割合。公的機関へ流れる細い額が見えるよう、下限は 25%</li>
+    </ul>
+  </div>
+
+  <details>
+    <summary>計算の前提と出典</summary>
+    <ul>
+      <li>2026年1〜12月の概算です。実際の額は保険料の標準報酬月額、税額表、扶養、自治体で変わります。申告や手続きは税理士、社労士、窓口で確認してください。</li>
+      <li>給与は月末締め翌月25日払い、賞与なし、扶養なし、協会けんぽ東京、前年も同額で働いた想定です。住民税、個人事業税、消費税は入れていません。</li>
+      <li>毎月の源泉所得税は、税額表の代わりに、基礎控除58万円、給与所得控除の最低65万円で年税額を出して12で割っています。年末調整や確定申告の年税額は令和8年分の改正 (基礎控除の特例、給与所得控除の最低74万円) で計算します。</li>
+      <li>業務委託は青色申告65万円控除の想定です。源泉徴収の対象かは報酬の種類で決まるので、発注元に確認してください。予定納税は前年の納税見込みが15万円以上のときに入ります。</li>
+      <li>健康保険は3月分まで9.91%、4月分から9.85%。介護保険は3月分まで1.59%、4月分から1.62%。子ども・子育て支援金0.23%は4月分から。いずれも翌月の給与で引きます。厚生年金の上限は標準報酬65万円として計算します。</li>
+      <li>雇用保険は令和8年度の一般の事業で、本人0.5%、会社0.85%。労災保険は「その他の各種事業」の0.3%を例にしています。年度更新の額は前年度の精算を省いています。</li>
+      <li>国民健康保険は自治体ごとに違うので、(所得 − 43万円) × 12% + 6万円 (40〜64歳は少し上乗せ) のおおまかな目安で、軽減を入れていません。</li>
+      <li>労働保険は雇用される人の制度です。業務委託のアニメーション制作作業従事者は、労災保険の第二種特別加入の対象で、保険料率は1000分の3です。図の特別加入は給付基礎日額1万円を例に、年10,950円を4月に納める形で描いています。納める時期と団体の会費は加入する団体によって違います。短時間の社会保険は月8.8万円以上、学生以外の想定です。有期雇用は、社会保険と雇用保険の対象になる長さの契約を想定しています (社会保険は2か月を超える見込み、雇用保険は31日以上の見込み)。この想定の中では、無期雇用と有期雇用の金額は同じです。</li>
+      <li>確定申告が必要かどうかは、所得や控除で変わります。タブの条件は主なものだけです。</li>
+      <li>今年の入社・開始は1日付けで、最初の支払いは翌月25日、今年の収入はこの支払いだけの想定です。前職の収入、入社前の国民年金や国民健康保険、前年の所得による国民健康保険の違いは入れていません。翌年に回る納付や申告は、図の下に「翌年に回るもの」として出します。金額は今年の料率で計算しています。年度更新の額は、賃金の締め日の違いを省いて、入社後の月数で計算しています。12月開始の最初の支払いの月の国民健康保険は入れていません。</li>
+      <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。事務組合の委託費は別です。</li>
+    </ul>
+    <p>出典:
+      <a href="https://jsite.mhlw.go.jp/yamagata-roudoukyoku/koyouhoken-20260316.html">雇用保険料率 (山形労働局)</a> /
+      <a href="https://www.kyoukaikenpo.or.jp/g7/cat330/sb3130/r08/">協会けんぽ 令和8年度の保険料率</a> /
+      <a href="https://www.nenkin.go.jp/service/kokunen/hokenryo/hokenryo.html">国民年金保険料 (日本年金機構)</a> /
+      <a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf">源泉徴収のあらまし (国税庁)</a> /
+      <a href="https://jsite.mhlw.go.jp/ishikawa-roudoukyoku/content/contents/tokubetukanyuu_2syu_3syu_hokenritukaitehyou_r6.4.1.pdf">第二種特別加入保険料率表 (石川労働局)</a> /
+      <a href="https://www.mhlw.go.jp/hourei/doc/tsuchi/T260319S0080.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
+      <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/002225902.pdf">兼務役員雇用実態証明書 (福岡労働局)</a> /
+      <a href="https://jsite.mhlw.go.jp/aomori-roudoukyoku/content/contents/002205685.pdf">中小事業主の特別加入 (青森労働局)</a>
+    </p>
+  </details>
+</div>
+
+<script>
+/*calc-start*/
+const MONTHS = [1,2,3,4,5,6,7,8,9,10,11,12];
+const COL = { co: 16.667, me: 50, gov: 83.333 };
+
+function incomeTax(taxable) {
+  const t = Math.floor(Math.max(0, taxable) / 1000) * 1000;
+  const b = [[1950000,.05,0],[3300000,.1,97500],[6950000,.2,427500],[9000000,.23,636000],[18000000,.33,1536000],[40000000,.4,2796000],[Infinity,.45,4796000]];
+  const [, r, d] = b.find(x => t <= x[0]);
+  return Math.floor(Math.max(0, t * r - d) * 1.021 / 100) * 100;
+}
+function salaryDeduction(y, min) {
+  const f = y <= 3600000 ? y * .3 + 80000 : y <= 6600000 ? y * .2 + 440000 : y <= 8500000 ? y * .1 + 1100000 : 1950000;
+  return Math.min(y, Math.max(min, f));
+}
+function basicDeduction(i) {
+  return i <= 4890000 ? 1040000 : i <= 6550000 ? 670000 : i <= 23500000 ? 620000 : i <= 24000000 ? 480000 : i <= 24500000 ? 320000 : i <= 25000000 ? 160000 : 0;
+}
+function calc(s) {
+  // start: 0 は前年以前、1〜12 は今年の開始月。最初の支払いは翌月
+  const start = s.startM || 0, firstPay = start ? start + 1 : 1, active = m => m >= firstPay;
+  const n = MONTHS.filter(active).length;
+  const amt = s.amt, fullYear = amt * 12, year = amt * n, emp = s.kind !== 'contractor', officer = s.kind === 'officer';
+  const hasSS = officer ? amt > 0 : emp && (s.hours === 30 || (s.hours === 20 && s.big && amt >= 88000));
+  const hasKoyo = s.kind === 'employee' && s.hours >= 20;
+  // 給与から引く額。m は支払月 (保険料は前月分)
+  const ssRaw = m => {
+    if (!hasSS) return { me: 0, all: 0 };
+    const hRate = (m <= 3 ? 9.91 : 9.85) + (s.age ? (m <= 3 ? 1.59 : 1.62) : 0) + (m >= 5 ? .23 : 0);
+    const h = Math.min(amt, 1390000) * hRate / 100, n = Math.min(amt, 650000) * 18.3 / 100;
+    return { me: Math.round((h + n) / 2), all: Math.round(h + n) };
+  };
+  const koyoRaw = m => hasKoyo ? Math.round(amt * (m <= 4 ? .55 : .5) / 100) : 0;
+  const ss = m => active(m) ? ssRaw(m) : { me: 0, all: 0 };
+  const koyo = m => active(m) ? koyoRaw(m) : 0;
+  const ssFullY = MONTHS.reduce((a, m) => a + ssRaw(m).me, 0), koyoFullY = MONTHS.reduce((a, m) => a + koyoRaw(m), 0);
+  const ssY = MONTHS.reduce((a, m) => a + ss(m).me, 0), koyoY = MONTHS.reduce((a, m) => a + koyo(m), 0);
+  const revenueIncome = emp ? year - salaryDeduction(year, 740000) : Math.max(0, year * (1 - s.exp / 100) - 650000);
+  // 国保は 10 期、国民年金は毎月
+  let kokuhoY = 0;
+  if (!hasSS) {
+    const base = Math.max(0, revenueIncome - 430000);
+    kokuhoY = Math.round(Math.min(s.age ? 1090000 : 920000, base * (s.age ? .14 : .12) + (s.age ? 77000 : 60000)));
+  }
+  const kokuho = m => (!hasSS && active(m) && [1,2,3,6,7,8,9,10,11,12].includes(m)) ? Math.round(kokuhoY / 10) : 0;
+  const nenkin = m => (hasSS || !active(m)) ? 0 : (m <= 4 ? 17510 : 17920);
+  const nationalY = hasSS ? 0 : MONTHS.reduce((a, m) => a + kokuho(m) + nenkin(m), 0);
+
+  const tokuY = !emp && s.tk ? 10950 : 0; // 業務委託の特別加入。給付基礎日額 1 万円 × 365 × 3/1000
+  const socialDed = ssY + koyoY + nationalY + tokuY;
+  const finalTax = incomeTax(revenueIncome - basicDeduction(revenueIncome) - socialDed);
+  let w;
+  if (emp) {
+    // 税額表は月額で決まるので、今年の途中入社でも 1 年いる前提の額を引く
+    const monthly = incomeTax(fullYear - salaryDeduction(fullYear, 650000) - 580000 - ssFullY - koyoFullY) / 12;
+    w = Math.floor(monthly / 10) * 10;
+  } else if (s.tab === 'srcNone') w = 0;
+  else w = Math.floor(amt <= 1000000 ? amt * .1021 : 102100 + (amt - 1000000) * .2042);
+  const withheldY = w * n;
+  const gap = finalTax - withheldY; // 正なら追加納税、負なら還付
+  const adjust = s.tab === 'adjust' ? Math.max(0, -gap) : 0;
+  const yotei = (!start && !emp && gap >= 150000) ? Math.floor(gap / 3 / 100) * 100 : 0;
+  const balance = s.tab === 'adjust' ? 0 : gap - yotei * 2;
+
+  // 会社から税務署への納付額。年末調整の還付は納付から差し引き、足りない分は翌月以降へ繰り越す
+  const payTo = {};
+  if (start) {
+    // 今年の開始なら前年分の納付は無い。12 月の支払い分と年末調整の精算は翌年 1 月に回る
+    if (emp && s.toku) { const h1 = MONTHS.filter(m => m <= 6 && active(m)).length; if (w * h1) payTo[7] = w * h1; }
+    else if (w > 0) MONTHS.filter(m => m > firstPay).forEach(m => { payTo[m] = w; });
+  } else if (emp && s.toku) { payTo[7] = w * 6; payTo[1] = Math.max(0, w * 6 - adjust); }
+  else if (w > 0) {
+    let carry = adjust;
+    MONTHS.forEach(m => { const v = Math.max(0, w - carry); carry = Math.max(0, carry - w); payTo[m] = v; });
+  }
+  // 7 月 10 日の年度更新に載る月数。今年度の概算 + 前年度の確定。7 月以降の開始は翌年度の精算に回る
+  const laborMonths = !start ? 12 : start <= 6 ? (start <= 4 ? 12 : 16 - start) + (start < 4 ? 4 - start : 0) : 0;
+  const laborY = officer ? (s.tk && laborMonths ? 10950 : 0) : emp ? Math.round(amt * laborMonths * ((hasKoyo ? 1.35 : 0) + .3) / 100) : 0;
+  const companySs = MONTHS.reduce((a, m) => a + ss(m).all - ss(m).me, 0);
+  return { ssRaw, start, firstPay, active, n, fullYear, laborMonths, amt, year, emp, hasSS, hasKoyo, ss, koyo, kokuho, nenkin, ssY, koyoY, nationalY, kokuhoY, finalTax, w, withheldY, gap, adjust, yotei, balance, payTo, laborY, companySs, tokuY,
+    net: year - finalTax - ssY - koyoY - nationalY - tokuY };
+}
+/*calc-end*/
+
+const $ = id => document.getElementById(id);
+const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
+const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
+const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, amt: 300000, age: 0, hours: 30, big: 1, toku: 0, exp: 20, src: 1, tk: 0, tab: 'adjust', labTab: 'both' };
+const TABS = {
+  employee: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
+  officer: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
+  contractor: [['srcYes', '源泉徴収あり → 確定申告'], ['srcNone', '源泉徴収なし → 確定申告']],
+};
+const LAB_TABS = {
+  employee: [['both', '雇用保険 + 労災保険'], ['rosai', '労災保険のみ']],
+  officer: [['officerNone', '加入なし'], ['tokubetsu1', '労災保険に特別加入']],
+  contractor: [['none', '加入なし'], ['tokubetsu', '労災保険に特別加入']],
+};
+const paidYear = s => s.amt * (s.startM ? 12 - s.startM : 12);
+const matchTax = s => s.kind !== 'contractor' ? (paidYear(s) > 20000000 ? 'filing' : 'adjust') : (s.src ? 'srcYes' : 'srcNone');
+const matchLab = s => s.kind === 'employee' ? (s.hours >= 20 ? 'both' : 'rosai') : s.kind === 'officer' ? (s.tk ? 'tokubetsu1' : 'officerNone') : (s.tk ? 'tokubetsu' : 'none');
+
+// ok: true 満たす / false 満たさない / null 入力欄にない条件
+function rules(s, k) {
+  const emp = s.kind !== 'contractor', officer = s.kind === 'officer', year = paidYear(s);
+  const hours = { 30: '30時間以上', 20: '20〜30時間', 0: '20時間未満' }[s.hours];
+  const rep = s.corp === 'llc' ? '代表社員' : '代表取締役';
+  const work = { employee: s.recv === 'fixed' ? '有期雇用' : '無期雇用', officer: rep, contractor: '業務委託' }[s.kind];
+  const isEmp = { t: '雇われて給与をもらっている', ok: s.kind === 'employee', now: work };
+  const isPaid = { t: officer ? '役員報酬をもらっている' : '雇われて給与をもらっている', ok: emp, now: work };
+  const isOfficer = { t: `${rep}である (代表権があるので労働者にあたらない)`, ok: officer, now: work };
+  const isCon = { t: '業務委託で報酬をもらっている', ok: !emp, now: work };
+  const R = {
+    adjust: { mode: 'all', items: [isPaid, { t: '年間の給与が2,000万円以下', ok: year <= 20000000, now: yen(year) },
+      { t: '扶養控除等申告書を会社に出している', ok: null }, { t: '年末まで在職している', ok: null }] },
+    filing: { mode: 'any', items: [{ t: '年間の給与が2,000万円を超える', ok: emp && year > 20000000, now: yen(year) },
+      { t: '給与以外の所得が20万円を超える', ok: null }, { t: '年末調整を受けずに退職した', ok: null },
+      { t: '医療費控除など、年末調整で扱えない控除を使う', ok: null }] },
+    srcYes: { mode: 'all', items: [isCon, { t: '報酬が源泉徴収の対象 (デザイン料・原稿料など)', ok: !!s.src, now: s.src ? '対象' : '対象外' }] },
+    srcNone: { mode: 'all', items: [isCon, { t: '報酬が源泉徴収の対象外', ok: !s.src, now: s.src ? '対象' : '対象外' }] },
+    both: { mode: 'all', items: [isEmp, { t: '週の所定労働時間が20時間以上', ok: s.hours >= 20, now: hours },
+      s.recv === 'permanent' ? { t: '31日以上働く見込みがある', ok: true, now: work } : { t: '31日以上働く見込みがある', ok: null },
+      { t: '昼間学生ではない', ok: null }] },
+    rosai: { mode: 'all', items: [isEmp, { t: '雇用保険の条件を満たさない (週20時間未満など)', ok: s.hours < 20, now: hours }] },
+    officerNone: { mode: 'all', items: [isOfficer, { t: '労災保険に特別加入していない', ok: !s.tk, now: s.tk ? 'する' : 'しない' }] },
+    tokubetsu1: { mode: 'all', items: [isOfficer, { t: '中小事業主の特別加入をする', ok: !!s.tk, now: s.tk ? 'する' : 'しない' },
+      { t: '労働者を年100日以上使う見込みがある', ok: null }, { t: '労働保険の事務を労働保険事務組合に委託している', ok: null }] },
+    none: { mode: 'all', items: [isCon, { t: '労災保険に特別加入していない', ok: !s.tk, now: s.tk ? 'する' : 'しない' }] },
+    tokubetsu: { mode: 'all', items: [isCon, { t: '特別加入団体を通じて任意で加入する', ok: !!s.tk, now: s.tk ? 'する' : 'しない' },
+      { t: '対象の作業に就いている (アニメーション制作など)', ok: null }] },
+  };
+  return R[k];
+}
+function whyHtml(k, matched) {
+  const r = rules(state, k);
+  const here = k === matched;
+  const hit = r.items.filter(i => i.ok === true).map(i => i.t);
+  const miss = r.items.filter(i => i.ok === false).map(i => i.t);
+  const verdict = here
+    ? `今の条件に該当します。${hit.length ? `決め手: ${hit.join('、')}` : ''}`
+    : r.mode === 'any'
+      ? '今の入力だけでは該当しません。下の − のどれかに当てはまると、このタブになります。'
+      : `今の条件には該当しません。満たしていない条件: ${miss.join('、')}`;
+  const mark = { true: ['yes', '○'], false: ['no', '×'], null: ['na', '−'] };
+  const items = r.items.map(i => {
+    const [c, m] = mark[i.ok];
+    return `<li><span class="mk ${c}">${m}</span><span>${i.t}${i.now ? ` <em>今: ${i.now}</em>` : ''}</span></li>`;
+  }).join('');
+  const hasNa = r.items.some(i => i.ok === null);
+  return `<p class="verdict">${verdict}</p><p class="sub">適用条件 (${r.mode === 'any' ? 'どれか1つ' : 'すべて'})</p><ul>${items}</ul>`
+    + (hasNa ? `<p class="sub">− は上の条件欄にない項目です。${r.mode === 'any' ? '' : '当てはまる想定で描いています。'}</p>` : '');
+}
+function tabsHtml(list, cur, matched, attr) {
+  return list.map(([k, l]) => `<button type="button" role="tab" class="tab" aria-selected="${k === cur}" ${attr}="${k}">${l}${k === matched ? '<span class="here">該当</span>' : ''}</button>`).join('');
+}
+
+// 官公庁のロゴではなく、列を見分けるための汎用の絵柄
+const svgIcon = d => `<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="${d}"/></svg>`;
+const ICONS = {
+  税務署: svgIcon('M3.5 1.5h6l3 3v10h-9zM9.5 1.5v3h3M6 7l2 2.5L10 7M8 9.5V13M6.25 10.5h3.5M6.25 12h3.5'),
+  労働局: svgIcon('M2 14.5h12M3.5 14.5v-8h9v8M1.5 6.5 8 2l6.500 4.500M6 9v5.500M10 9v5.500'),
+};
+
+function ev(date, from, to, label, amount, base, opts = {}) {
+  return { date, from, to, label, amount, base, ...opts };
+}
+function arrow(e) {
+  if (e.mark) return `<div class="lab" style="left:33.333%;width:33.333%">${e.label}</div>`;
+  const a = COL[e.from], b = COL[e.to], left = Math.min(a, b), w = Math.abs(a - b);
+  const dir = b > a ? 'r' : 'l', tone = e.to === 'me' ? 'pay' : 'gov';
+  const op = e.paper ? 1 : Math.max(.25, Math.min(1, e.base ? e.amount / e.base : 1));
+  const money = e.paper ? '' : `<span class="num">${yen(e.amount)}</span>`;
+  const share = (!e.paper && e.showShare !== false) ? ` <em class="num">${pct(e.amount, e.base)}</em>` : '';
+  return `<div class="lab" style="left:${left}%;width:${w}%">${e.label}<br>${money}${share}</div>
+    <div class="arr ${dir} ${tone}${e.paper ? ' paper' : ''}" style="left:${left}%;width:${w}%;opacity:${op}" aria-hidden="true"></div>`;
+}
+function seq(cols, byMonth, next = {}) {
+  const block = (map, m) => {
+    const list = (map[m] || []).sort((x, y) => x.sort - y.sort);
+    const rows = list.length ? list.map(e => `<div class="row"><div class="date">${e.date}</div><div class="lanes">${arrow(e)}</div></div>`).join('')
+      : `<div class="row empty"><div></div><div class="lanes"></div></div>`;
+    return `<div class="month"><div class="mlabel">${m}月</div><div class="rows">${rows}</div></div>`;
+  };
+  const months = MONTHS.map(m => block(byMonth, m)).join('');
+  const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m)).join('');
+  const tail = nextMonths ? `<div class="sep">翌年に回るもの</div>${nextMonths}` : '';
+  return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c] || ''}${c}</span>`).join('')}</div></div>${months}${tail}</div>`;
+}
+function add(map, m, sort, e) { (map[m] = map[m] || []).push({ ...e, sort }); }
+
+function render() {
+  syncSeg();
+  $('startWrap').hidden = !state.startMode;
+  const s = state, c = calc(s), emp = c.emp;
+  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = !el.dataset.only.split(' ').includes(s.kind); });
+  const payer = '支払側', pay = s.kind === 'officer' ? '役員報酬' : emp ? '給与' : '報酬', me = '受取側';
+
+  $('tabs').innerHTML = tabsHtml(TABS[s.kind], s.tab, matchTax(s), 'data-tab');
+  $('taxWhy').innerHTML = whyHtml(s.tab, matchTax(s));
+  $('labTabs').innerHTML = tabsHtml(LAB_TABS[s.kind], s.labTab, matchLab(s), 'data-lab');
+  $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
+
+  // 所得税
+  const tax = {};
+  MONTHS.forEach(m => {
+    if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
+    if (c.payTo[m]) {
+      const date = emp && s.toku ? (m === 1 ? '20日' : '10日') : '10日';
+      add(tax, m, m === 1 && emp && s.toku ? 20 : 10, ev(date, 'co', 'gov', '源泉所得税を納付', c.payTo[m], c.amt));
+    }
+  });
+  if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
+  if (s.tab === 'adjust') {
+    if (c.n) add(tax, 11, 15, ev('11月', 'me', 'co', '扶養・保険料の申告書', 0, 1, { paper: true }));
+    if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
+  } else if (!c.start) {
+    add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
+    if (c.balance > 0) add(tax, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.balance, c.amt));
+    if (c.balance < 0) add(tax, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.balance, c.amt));
+    if (c.yotei) {
+      add(tax, 7, 28, ev('31日', 'me', 'gov', '予定納税 1期', c.yotei, c.amt));
+      add(tax, 11, 28, ev('30日', 'me', 'gov', '予定納税 2期', c.yotei, c.amt));
+    }
+  }
+  const taxNext = {};
+  if (c.start) {
+    if (c.start === 12) add(taxNext, 1, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
+    if (c.n && c.w) {
+      const toku = emp && s.toku;
+      const base = toku ? c.w * MONTHS.filter(m => m >= 7 && c.active(m)).length : c.w;
+      const v = Math.max(0, base - c.adjust);
+      if (v) add(taxNext, 1, toku ? 20 : 10, ev(toku ? '20日' : '10日', 'co', 'gov', toku ? '7〜12月の支払い分を納付' : '12月の支払い分を納付', v, c.amt));
+    }
+    if (s.tab !== 'adjust' && c.n && (c.finalTax > 0 || c.withheldY > 0)) {
+      add(taxNext, 3, 15, ev('15日', 'me', 'gov', '今年分の確定申告', 0, 1, { paper: true }));
+      if (c.balance > 0) add(taxNext, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.balance, c.amt));
+      if (c.balance < 0) add(taxNext, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.balance, c.amt));
+    }
+  }
+  $('seqTax').innerHTML = seq([payer, me, '税務署'], tax, taxNext);
+  $('taxNote').textContent = emp
+    ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
+    : s.tab === 'srcYes'
+      ? `毎月 ${pct(c.w, c.amt)} (100万円まで10.21%、超えた分は20.42%) を差し引かれ、年税額 ${yen(c.finalTax)} との差を翌年3月に精算します。`
+      : `支払いのときには何も引かれず、年税額 ${yen(c.finalTax)} を自分で納めます。`;
+  if (c.start) $('taxNote').textContent += s.tab === 'adjust'
+    ? ` 今年の収入は ${c.n}回分です。${c.adjust > c.w ? '還付の分は、翌年の納付から順に差し引きます。' : ''}`
+    : ` 今年の収入は ${c.n}回分です。今年の3月に前年分の申告はありません。`;
+
+  // 労働保険
+  if (s.labTab === 'none' || s.labTab === 'officerNone') {
+    $('labNote').textContent = '';
+    $('seqLab').innerHTML = `<div class="seq"><p class="none">本人の労働保険の支払いはありません。仕事中のけがの補償も失業手当もありません。</p></div>`;
+  } else if (s.labTab === 'tokubetsu1') {
+    const lab = {};
+    MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '役員報酬', c.amt, c.amt)));
+    if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', 10950, c.fullYear));
+    const labNext = {};
+    if (c.start === 12) add(labNext, 1, 25, ev('25日', 'co', 'me', '役員報酬', c.amt, c.amt));
+    if (c.start) add(labNext, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', 10950, c.fullYear));
+    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext);
+    $('labNote').textContent = '給付基礎日額1万円の例で年 10,950円。雇用保険はありません。従業員の分の労働保険は別に納めます。';
+  } else if (s.labTab === 'tokubetsu') {
+    const lab = {};
+    MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt)));
+    if (!c.start || c.start <= 4) add(lab, 4, 10, ev('4月頃', 'me', 'gov', '特別加入の保険料 (団体経由)', 10950, c.fullYear));
+    const labNext = {};
+    if (c.start === 12) add(labNext, 1, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt));
+    if (c.start) add(labNext, 4, 10, ev('4月頃', 'me', 'gov', '特別加入の保険料 (団体経由)', 10950, c.fullYear));
+    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext);
+    $('labNote').textContent = '保険料は全額が本人負担です。給付基礎日額1万円の例で年 10,950円。団体の会費は別にかかります。雇用保険はありません。';
+  } else {
+    const withKoyo = s.labTab === 'both';
+    const koyo = m => withKoyo && c.active(m) ? Math.round(c.amt * (m <= 4 ? .55 : .5) / 100) : 0;
+    const koyoY = MONTHS.reduce((a, m) => a + koyo(m), 0);
+    const lab = {};
+    MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', withKoyo ? '給与 (雇用保険を天引き)' : '給与', c.amt - koyo(m), c.amt)));
+    if (withKoyo && c.start && c.start < 12) add(lab, c.start + 1, 9, ev('10日', 'co', 'gov', '雇用保険の資格取得届', 0, 1, { paper: true }));
+    if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', c.start ? `年度更新で${c.laborMonths}か月分を納付` : '年度更新で1年分を納付', Math.round(c.amt * c.laborMonths * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
+    if (c.start) add(lab, c.start, 1, ev('1日', 'me', 'me', '労災保険の補償開始 (手続き不要)', 0, 1, { mark: true }));
+    const labNext = {};
+    if (c.start) {
+      if (c.start === 12) {
+        if (withKoyo) add(labNext, 1, 10, ev('10日', 'co', 'gov', '雇用保険の資格取得届', 0, 1, { paper: true }));
+        add(labNext, 1, 25, ev('25日', 'co', 'me', withKoyo ? '給与 (雇用保険を天引き)' : '給与', c.amt - (withKoyo ? Math.round(c.amt * .5 / 100) : 0), c.amt));
+      }
+      // 7 月以降の開始は、今年度の確定分が翌年の年度更新に初めて載る
+      const carried = c.start >= 7 ? 16 - c.start : 0, months = 12 + carried;
+      add(labNext, 7, 10, ev('10日', 'co', 'gov', carried ? `年度更新で今年度の${carried}か月分 + 翌年度分を納付` : '年度更新で1年分を納付', Math.round(c.amt * months * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
+    }
+    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext);
+    $('labNote').textContent = withKoyo
+      ? `年 ${yen(koyoY)} が本人負担の雇用保険です。労災保険は全額を会社が払います。`
+      : '雇用保険には入りません。労災保険は全額を会社が払います。';
+  }
+
+  // 社会保険
+  const soc = {};
+  if (c.hasSS && c.start) add(soc, c.start, 5, ev('5日', 'co', 'gov', '資格取得届', 0, 1, { paper: true }));
+  MONTHS.filter(c.active).forEach(m => {
+    add(soc, m, 25, ev('25日', 'co', 'me', c.hasSS ? `${pay} (前月分を天引き)` : pay, c.amt - c.ss(m).me, c.amt));
+    if (c.hasSS) add(soc, m, 30, ev('月末', 'co', 'gov', '労使の前月分を納付', c.ss(m).all, c.amt));
+    else {
+      add(soc, m, 30, ev('月末', 'me', 'gov', '国民年金', c.nenkin(m), c.amt));
+      if (c.kokuho(m)) add(soc, m, 31, ev('月末', 'me', 'gov', '国民健康保険 (目安)', c.kokuho(m), c.amt));
+    }
+  });
+  const socNext = {};
+  if (c.start === 12) {
+    const r = c.ssRaw(12);
+    add(socNext, 1, 25, ev('25日', 'co', 'me', c.hasSS ? `${pay} (前月分を天引き)` : pay, c.amt - r.me, c.amt));
+    if (c.hasSS) add(socNext, 1, 30, ev('月末', 'co', 'gov', '労使の前月分を納付', r.all, c.amt));
+    else add(socNext, 1, 30, ev('月末', 'me', 'gov', '国民年金', 17920, c.amt));
+  }
+  $('seqSoc').innerHTML = seq([payer, me, c.hasSS ? '年金事務所' : '年金機構・市区町村'], soc, socNext);
+  $('socNote').textContent = c.hasSS
+    ? `健康保険と厚生年金に入り、会社と折半します。本人 年 ${yen(c.ssY)}、会社 年 ${yen(c.companySs)}。`
+    : `会社の社会保険に入らないので、国民年金と国民健康保険を自分で払います。年 ${yen(c.nationalY)} (国保は目安)。`;
+
+  // まとめ
+  $('sumTitle').innerHTML = `${emp ? '額面' : '売上'} 年 <span class="num">${yen(c.year)}</span> の行き先`;
+  const parts = [
+    [emp ? '手元に残る額' : '手元に残る額 (経費込み)', c.net, 'var(--pay)'],
+    ['所得税', c.finalTax, 'var(--gov)'],
+    ['社会保険', c.ssY + c.nationalY, 'var(--ins)'],
+    ['労働保険', c.koyoY + c.tokuY, 'var(--labor)'],
+  ].filter(p => p[1] > 0);
+  $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? p[1] / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
+  $('legend').innerHTML = parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')
+    + (emp ? `<li>会社が別に負担 <span class="num">${yen(Math.max(0, c.companySs + c.laborY - c.koyoY))}</span></li>` : '');
+}
+
+function syncSeg() {
+  $('k-l').disabled = state.corp !== 'llc';
+  $('k-k').disabled = state.corp !== 'kk';
+  document.querySelectorAll('.seg').forEach(g => {
+    const v = String(state[g.dataset.k]);
+    g.querySelectorAll('input').forEach(i => { i.checked = i.value === v; });
+  });
+}
+function sync() {
+  $('amt').value = state.amt; $('exp').value = state.exp; $('startM').value = state.startSel;
+}
+function setSeg(k, v) {
+  if (k === 'recv') {
+    state.recv = v;
+    state.kind = v === 'llcRep' || v === 'kkRep' ? 'officer' : v === 'contractor' ? v : 'employee';
+  } else if (k === 'corp') {
+    state.corp = v;
+    // 会社の種類に無い肩書きを選んでいたら、その会社の代表の肩書きに読み替える
+    if (state.kind === 'officer') state.recv = v === 'llc' ? 'llcRep' : 'kkRep';
+  } else if (k === 'startMode') {
+    state.startMode = Number(v);
+    state.startM = state.startMode ? state.startSel : 0;
+  } else state[k] = Number(v);
+}
+// 条件を変えて該当が変わったら、該当するタブへ移る
+function update(fn) {
+  const tax = matchTax(state), lab = matchLab(state);
+  fn();
+  if (matchTax(state) !== tax) state.tab = matchTax(state);
+  if (matchLab(state) !== lab) state.labTab = matchLab(state);
+  render();
+}
+$('cond').addEventListener('change', e => {
+  if (e.target.id === 'startM') update(() => { state.startSel = state.startM = Number(e.target.value); });
+  const g = e.target.closest('.seg');
+  if (g) update(() => setSeg(g.dataset.k, e.target.value));
+});
+$('cond').addEventListener('input', e => {
+  if (e.target.id === 'amt') update(() => { state.amt = Math.min(2000000, Math.max(0, Number(e.target.value) || 0)); });
+  if (e.target.id === 'exp') update(() => { state.exp = Math.min(90, Math.max(0, Number(e.target.value) || 0)); });
+});
+$('tabs').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]');
+  if (t) { state.tab = t.dataset.tab; render(); }
+});
+$('labTabs').addEventListener('click', e => {
+  const t = e.target.closest('[data-lab]');
+  if (t) { state.labTab = t.dataset.lab; render(); }
+});
+sync(); render();
+</script>
+</body>
+</html>
