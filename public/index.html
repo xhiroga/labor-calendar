@@ -36,6 +36,9 @@ h2 { font-size: 19px; margin: 0 }
 .seg input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg) }
 .seg label:has(input:disabled) { cursor: not-allowed }
 .seg input:disabled + span { color: var(--muted); border-style: dashed; opacity: .55; text-decoration: line-through }
+.field.off > legend, .field.off > label { color: var(--rule) }
+.field.off .seg, .field.off select, .field.off input[type=number] { opacity: .45 }
+.field.off .seg input + span, .field.off .seg input:checked + span { background: none; color: var(--muted); border: 1px solid var(--rule); text-decoration: none; opacity: 1 }
 .seg input:focus-visible + span, input[type=number]:focus-visible, .tab:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
 select:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
 select, input[type=number] { width: 100%; font: 16px var(--num); padding: 5px 8px; background: var(--bg); color: var(--fg); border: 1px solid var(--rule) }
@@ -465,7 +468,12 @@ function render() {
   $('startWrap').hidden = !state.startMode;
   $('endWrap').hidden = !state.endMode;
   const s = state, c = calc(s), emp = c.emp;
-  document.querySelectorAll('[data-only]').forEach(el => { el.hidden = !el.dataset.only.split(' ').includes(s.kind); });
+  // 働き方に関係ない項目は消さずに無効にする。消すと項目が詰まって並びが変わる
+  document.querySelectorAll('[data-only]').forEach(el => {
+    const off = !el.dataset.only.split(' ').includes(s.kind);
+    el.classList.toggle('off', off);
+    el.querySelectorAll('input, select').forEach(i => { i.disabled = off; });
+  });
   const lastPayNext = !c.sameMonth && (c.start === 12 || c.end === 12); // 最後または最初の支払いが翌年 1 月
   const payer = '支払側', pay = s.kind === 'officer' ? '役員報酬' : emp ? '給与' : '報酬', me = '受取側';
 
