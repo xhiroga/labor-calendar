@@ -489,8 +489,14 @@ function render() {
     }
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
+  // 金額が図の条件だけでは決まらない確定申告は、納付と還付を破線で出す
+  const filed = map => {
+    add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
+    add(map, 3, 16, ev('15日', 'me', 'gov', '税額があれば納付', 0, 1, { paper: true }));
+    add(map, 4, 15, ev('4月頃', 'gov', 'me', '払いすぎなら還付', 0, 1, { paper: true }));
+  };
   if (tab === 'adjust') {
-    if (s.fil && !c.start) add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
+    if (s.fil && !c.start) filed(tax);
     if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
     if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
   } else if (!c.start) {
@@ -531,12 +537,12 @@ function render() {
   if (!c.end) {
     if (tab === 'adjust') {
       [taxNext, taxAfter].forEach(map => {
-        if (s.fil) add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
+        if (s.fil) filed(map);
         add(map, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
         add(map, 12, 26, ev('12月', 'co', 'me', '年末調整で過不足を精算', 0, 1, { paper: true }));
       });
     } else {
-      add(taxAfter, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
+      filed(taxAfter);
       if (!emp && c.gap >= 150000) {
         const y = Math.floor(c.gap / 3 / 100) * 100;
         add(taxNext, 7, 28, ev('31日', 'me', 'gov', '予定納税 1期', y, c.amt));
