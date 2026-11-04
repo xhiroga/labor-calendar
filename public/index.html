@@ -462,8 +462,11 @@ function render() {
   $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
 
   // 所得税
-  const tax = {};
+  const tax = {}, toku = emp && s.toku, files = emp || c.w > 0;
+  // 徴収高計算書は税額が 0 円でも出す。納付の矢印の直前に並べる
+  const filing = (map, m) => add(map, m, m === 1 && toku ? 19 : 9, ev(m === 1 && toku ? '20日' : '10日', 'co', 'gov', '徴収高計算書を提出', 0, 1, { paper: true }));
   MONTHS.forEach(m => {
+    if (files && (toku ? (m === 7 ? MONTHS.some(x => x <= 6 && c.active(x)) : m === 1 && !c.start) : (m === 1 ? !c.start : c.active(m - 1)))) filing(tax, m);
     if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
     if (c.payTo[m]) {
       const date = emp && s.toku ? (m === 1 ? '20日' : '10日') : '10日';
@@ -486,8 +489,11 @@ function render() {
   }
   const taxNext = {};
   if (emp && c.end) place(tax, taxNext, c.end + 1, 26, ev('1か月以内', 'co', 'me', '給与所得の源泉徴収票', 0, 1, { paper: true }));
-  const taxAfter = {}, toku = emp && s.toku;
+  const taxAfter = {};
   if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
+  if (files && (toku ? MONTHS.some(m => m >= 7 && c.active(m)) : c.end && c.active(12))) filing(taxNext, 1);
+  if (files && c.end === 12) filing(taxNext, toku ? 7 : 2);
+  if (files && toku && !c.end) { filing(taxNext, 7); filing(taxAfter, 1); filing(taxAfter, 7); }
   if (c.w && (toku || c.end)) {
     const base = toku ? c.w * MONTHS.filter(m => m >= 7 && c.active(m)).length : c.active(12) ? c.w : 0;
     const v = Math.max(0, base - c.adjust);
@@ -527,7 +533,9 @@ function render() {
   }
   $('seqTax').innerHTML = seq([payer, me, '税務署'], tax, taxNext, taxAfter);
   $('taxNote').textContent = emp
-    ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
+    ? c.w
+      ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
+      : `年税額 ${yen(c.finalTax)}。毎月の源泉所得税は 0 円で納付はありませんが、徴収高計算書は 0 円でも提出します。`
     : s.tab === 'srcYes'
       ? `毎月 ${pct(c.w, c.amt)} (100万円まで10.21%、超えた分は20.42%) を差し引かれ、年税額 ${yen(c.finalTax)} との差を翌年3月に精算します。`
       : `支払いのときには何も引かれず、年税額 ${yen(c.finalTax)} を自分で納めます。`;
