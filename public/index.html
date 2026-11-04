@@ -440,8 +440,8 @@ function seq(cols, byMonth, next = {}, after = {}) {
   const months = MONTHS.map(m => block(byMonth, m)).join('');
   const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m)).join('');
   const afterMonths = MONTHS.filter(m => after[m]).map(m => block(after, m)).join('');
-  const tail = (nextMonths ? `<div class="sep">翌年 (毎月のものは省略)</div>${nextMonths}` : '')
-    + (afterMonths ? `<div class="sep">翌々年以降 (毎年。毎月のものは省略)</div>${afterMonths}` : '');
+  const tail = (nextMonths ? `<div class="sep">翌年（毎月分除く）</div>${nextMonths}` : '')
+    + (afterMonths ? `<div class="sep">翌々年以降（毎月分除く）</div>${afterMonths}` : '');
   return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c] || ''}${c}</span>`).join('')}</div></div>${months}${tail}</div>`;
 }
 function add(map, m, sort, e) { (map[m] = map[m] || []).push({ ...e, sort }); }
