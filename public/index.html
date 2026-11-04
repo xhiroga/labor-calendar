@@ -80,6 +80,9 @@ section { display: grid; gap: 10px; min-width: 0 }
 .arr::after { content: ""; position: absolute; top: -4px; border-block: 5px solid transparent }
 .arr.r::after { right: 0; border-left: 8px solid currentColor }
 .arr.l::after { left: 0; border-right: 8px solid currentColor }
+.info { position: relative; display: inline-block; width: 14px; height: 14px; margin: 0 2px; border: 1px solid currentColor; border-radius: 50%; font-size: 10px; line-height: 12px; text-align: center; font-style: italic; cursor: help; vertical-align: 1px }
+.tip { display: none; position: absolute; z-index: 5; top: 18px; left: 50%; transform: translateX(-50%); width: min(280px, 70vw); padding: 8px 10px; background: var(--fg); color: var(--bg); font-size: 12px; font-style: normal; line-height: 1.5; text-align: left }
+.info:hover .tip, .info:focus .tip { display: block }
 .arr.paper { background: none; border-top: 2px dashed currentColor; height: 0 }
 .arr.paper::after { top: -6px }
 .lab { position: absolute; bottom: 13px; text-align: center; font-size: 11.5px; line-height: 1.25; padding-inline: 8px; color: var(--fg) }
@@ -422,7 +425,7 @@ function arrow(e) {
   const dir = b > a ? 'r' : 'l', tone = e.to === 'me' ? 'pay' : 'gov';
   const op = e.paper ? 1 : Math.max(.25, Math.min(1, e.base ? e.amount / e.base : 1));
   const money = e.paper ? '' : `<br><span class="num">${yen(e.amount)}</span> <em class="num">${pct(e.amount, e.base)}</em>`;
-  return `<div class="lab" style="left:${left}%;width:${w}%">${e.label}${money}</div>
+  return `<div class="lab" style="left:${left}%;width:${w}%">${e.label}${e.info ? `<span class="info" tabindex="0" role="img" aria-label="${e.info}">i<span class="tip" aria-hidden="true">${e.info}</span></span>` : ''}${e.after || ''}${money}</div>
     <div class="arr ${dir} ${tone}${e.paper ? ' paper' : ''}" style="left:${left}%;width:${w}%;opacity:${op}" aria-hidden="true"></div>`;
 }
 function seq(cols, byMonth, next = {}) {
@@ -467,7 +470,7 @@ function render() {
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
   if (s.tab === 'adjust') {
-    if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '扶養・保険料の申告書', 0, 1, { paper: true }));
+    if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
     if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
   } else if (!c.start) {
     add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
