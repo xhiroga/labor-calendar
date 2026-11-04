@@ -187,7 +187,6 @@ a { color: inherit }
 
   <section>
     <h2 class="hlogo"><a class="logo" href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/shotoku.htm" target="_blank" rel="noopener" title="国税庁ホームページ「所得税」へ"><img src="nta-symbol.svg" height="28" alt="税に関するシンボルマーク。国税庁ホームページ「所得税」へ"></a>所得税</h2>
-    <div class="tabs" role="tablist" id="tabs"></div>
     <div class="why" id="taxWhy"></div>
     <p class="note" id="taxNote"></p>
     <div id="seqTax"></div>
@@ -225,7 +224,7 @@ a { color: inherit }
       <li>雇用保険は令和8年度の一般の事業で、本人0.5%、会社0.85%。労災保険は「その他の各種事業」の0.3%を例にしています。年度更新の額は前年度の精算を省いています。</li>
       <li>国民健康保険は自治体ごとに違うので、(所得 − 43万円) × 12% + 6万円 (40〜64歳は少し上乗せ) のおおまかな目安で、軽減を入れていません。</li>
       <li>労働保険は雇用される人の制度です。業務委託のアニメーション制作作業従事者は、労災保険の第二種特別加入の対象で、保険料率は1000分の3です。図の特別加入は給付基礎日額1万円を例に、年10,950円を4月に納める形で描いています。納める時期と団体の会費は加入する団体によって違います。短時間の社会保険は月8.8万円以上、学生以外の想定です。有期雇用は、社会保険と雇用保険の対象になる長さの契約を想定しています (社会保険は2か月を超える見込み、雇用保険は31日以上の見込み)。この想定の中では、無期雇用と有期雇用の金額は同じです。</li>
-      <li>確定申告が必要かどうかは、所得や控除で変わります。タブの条件は主なものだけです。</li>
+      <li>確定申告が必要かどうかは、所得や控除で変わります。図の条件は主なものだけです。</li>
       <li>今年の入社・開始は1日付けで、最初の支払いは翌月25日 (当月払いなら当月25日)、今年の収入はこの支払いだけの想定です。前職の収入、入社前の国民年金や国民健康保険、前年の所得による国民健康保険の違いは入れていません。翌年の納付や申告は、図の下に「翌年」として出します。金額は今年の料率で計算しています。年度更新の額は、賃金の締め日の違いを省いて、入社後の月数で計算しています。12月開始の最初の支払いの月の国民健康保険は入れていません。</li>
       <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険、次の仕事の収入は入れていません。年の途中で退職すると年末調整がないので、確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
       <li>健康保険と厚生年金の資格は入社日に発生します。図の破線は、その確認の通知が受取側へ届く流れです。資格情報のお知らせは協会けんぽの場合の名称で、資格確認書はマイナ保険証を持たない人などに交付されます。</li>
@@ -272,7 +271,7 @@ function basicDeduction(i) {
 function calc(s) {
   // start: 0 は前年以前、1〜12 は今年の開始月。最初の支払いは翌月 (当月払いは当月)
   // end: 0 は今年の終了なし、1〜12 は今年の終了月 (月末)。最後の支払いは翌月 (当月払いは当月)
-  const sameMonth = s.kind !== 'contractor' && !!s.cur, lag = sameMonth ? 0 : 1;
+  const tab = matchTax(s), sameMonth = s.kind !== 'contractor' && !!s.cur, lag = sameMonth ? 0 : 1;
   const start = s.startM || 0, end = s.endM || 0, firstPay = start ? start + lag : 1, active = m => m >= firstPay && (!end || m <= end + lag);
   const n = MONTHS.filter(active).length;
   const amt = s.amt, fullYear = amt * 12, year = amt * n, emp = s.kind !== 'contractor', officer = s.kind === 'officer';
@@ -317,19 +316,19 @@ function calc(s) {
     // 税額表は月額で決まるので、今年の途中入社でも 1 年いる前提の額を引く
     const monthly = incomeTax(fullYear - salaryDeduction(fullYear, 650000) - 580000 - ssFullY - koyoFullY) / 12;
     w = Math.floor(monthly / 10) * 10;
-  } else if (s.tab === 'srcNone') w = 0;
+  } else if (tab === 'srcNone') w = 0;
   else w = Math.floor(amt <= 1000000 ? amt * .1021 : 102100 + (amt - 1000000) * .2042);
   const withheldY = w * n;
   const gap = finalTax - withheldY; // 正なら追加納税、負なら還付
-  const adjust = s.tab === 'adjust' && !end ? Math.max(0, -gap) : 0;
+  const adjust = tab === 'adjust' && !end ? Math.max(0, -gap) : 0;
   // 3 月に申告する前年分は 1 年いた前提。今年の途中で辞めても前年分と予定納税は変わらない
   const nenkinFull = hasSS ? 0 : MONTHS.reduce((a, m) => a + (m <= 4 ? 17510 : 17920), 0);
   const prevSocial = ssFullY + koyoFullY + tokuY + (hasSS ? 0 : Math.round(kokuhoY / 10) * 10 + nenkinFull);
   const prevIncome = incomeOf(fullYear);
   const prevGap = incomeTax(prevIncome - basicDeduction(prevIncome) - prevSocial) - w * 12;
   const yotei = (!start && !emp && prevGap >= 150000) ? Math.floor(prevGap / 3 / 100) * 100 : 0;
-  const prevBalance = s.tab === 'adjust' ? 0 : prevGap - yotei * 2;
-  const balance = s.tab === 'adjust' ? 0 : gap - yotei * 2;
+  const prevBalance = tab === 'adjust' ? 0 : prevGap - yotei * 2;
+  const balance = tab === 'adjust' ? 0 : gap - yotei * 2;
 
   // 会社から税務署への納付額。年末調整の還付は納付から差し引き、足りない分は翌月以降へ繰り越す
   const payTo = {};
@@ -356,18 +355,13 @@ function calc(s) {
 const $ = id => document.getElementById(id);
 const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
 const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
-const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, cur: 0, exp: 20, src: 1, tk: 0, fil: 0, tab: 'adjust', labTab: 'both' };
-const TABS = {
-  employee: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
-  officer: [['adjust', '源泉徴収 → 年末調整'], ['filing', '源泉徴収 → 確定申告']],
-  contractor: [['srcYes', '源泉徴収あり → 確定申告'], ['srcNone', '源泉徴収なし → 確定申告']],
-};
+const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, cur: 0, exp: 20, src: 1, tk: 0, fil: 0, labTab: 'both' };
 const LAB_TABS = {
   employee: [['both', '雇用保険 + 労災保険'], ['rosai', '労災保険のみ']],
   officer: [['officerNone', '加入なし'], ['tokubetsu1', '労災保険に特別加入']],
   contractor: [['none', '加入なし'], ['tokubetsu', '労災保険に特別加入']],
 };
-const paidYear = s => s.amt * Math.max(0, Math.min(12, s.endM ? s.endM + 1 : 12) - (s.startM ? s.startM + 1 : 1) + 1);
+const paidYear = s => { const lag = s.kind !== 'contractor' && s.cur ? 0 : 1; return s.amt * Math.max(0, Math.min(12, s.endM ? s.endM + lag : 12) - (s.startM ? s.startM + lag : 1) + 1); };
 const matchTax = s => s.kind !== 'contractor' ? (s.endM || paidYear(s) > 20000000 ? 'filing' : 'adjust') : (s.src ? 'srcYes' : 'srcNone');
 const matchLab = s => s.kind === 'employee' ? (s.hours >= 20 ? 'both' : 'rosai') : s.kind === 'officer' ? (s.tk ? 'tokubetsu1' : 'officerNone') : (s.tk ? 'tokubetsu' : 'none');
 
@@ -477,8 +471,8 @@ function render() {
   const lastPayNext = !c.sameMonth && (c.start === 12 || c.end === 12); // 最後または最初の支払いが翌年 1 月
   const payer = '支払側', pay = s.kind === 'officer' ? '役員報酬' : emp ? '給与' : '報酬', me = '受取側';
 
-  $('tabs').innerHTML = tabsHtml(TABS[s.kind], s.tab, matchTax(s), 'data-tab');
-  $('taxWhy').innerHTML = whyHtml(s.tab, matchTax(s));
+  const tab = matchTax(s);
+  $('taxWhy').innerHTML = whyHtml(tab, tab);
   $('labTabs').innerHTML = tabsHtml(LAB_TABS[s.kind], s.labTab, matchLab(s), 'data-lab');
   $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
 
@@ -495,7 +489,7 @@ function render() {
     }
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
-  if (s.tab === 'adjust') {
+  if (tab === 'adjust') {
     if (s.fil && !c.start) add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
     if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
     if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
@@ -529,13 +523,13 @@ function render() {
     add(taxAfter, 1, 20, ev('20日', 'co', 'gov', '前年7〜12月分の源泉所得税を納付', c.w * 6, c.amt));
     add(taxAfter, 7, 10, ev('10日', 'co', 'gov', '1〜6月分の源泉所得税を納付', c.w * 6, c.amt));
   }
-  if (s.tab !== 'adjust' && c.n && (c.finalTax > 0 || c.withheldY > 0)) {
+  if (tab !== 'adjust' && c.n && (c.finalTax > 0 || c.withheldY > 0)) {
     add(taxNext, 3, 15, ev('15日', 'me', 'gov', '今年分の確定申告', 0, 1, { paper: true }));
     if (c.balance > 0) add(taxNext, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.balance, c.amt));
     if (c.balance < 0) add(taxNext, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.balance, c.amt));
   }
   if (!c.end) {
-    if (s.tab === 'adjust') {
+    if (tab === 'adjust') {
       [taxNext, taxAfter].forEach(map => {
         if (s.fil) add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
         add(map, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
@@ -557,17 +551,17 @@ function render() {
     ? c.w
       ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
       : `年税額 ${yen(c.finalTax)}。毎月の源泉所得税は 0 円で納付はありませんが、徴収高計算書は 0 円でも提出します。`
-    : s.tab === 'srcYes'
+    : tab === 'srcYes'
       ? `毎月 ${pct(c.w, c.amt)} (100万円まで10.21%、超えた分は20.42%) を差し引かれ、年税額 ${yen(c.finalTax)} との差を翌年3月に精算します。`
       : `支払いのときには何も引かれず、年税額 ${yen(c.finalTax)} を自分で納めます。`;
-  if (c.start) $('taxNote').textContent += s.tab === 'adjust'
+  if (c.start) $('taxNote').textContent += tab === 'adjust'
     ? ` 今年の収入は ${c.n}回分です。${c.adjust > c.w ? '還付の分は、翌年の納付から順に差し引きます。' : ''}`
     : ` 今年の収入は ${c.n}回分です。今年の3月に前年分の申告はありません。`;
   if (c.end) $('taxNote').textContent += emp
     ? ` ${c.end}月末で退職するので、最後の給与は${c.sameMonth ? c.end : c.end === 12 ? '翌年1' : c.end + 1}月です。年末調整はなく、翌年3月の確定申告で精算します。`
     : ` ${c.end}月末で終了するので、最後の支払いは${c.end === 12 ? '翌年1' : c.end + 1}月です。`;
 
-  if (!c.end) $('taxNote').textContent += s.tab === 'adjust'
+  if (!c.end) $('taxNote').textContent += tab === 'adjust'
     ? (s.fil ? ' 年末調整で精算したうえで、翌年3月に確定申告もします。医療費控除の還付や給与以外の所得の税額は図の金額に入れていません。' : ' 年末調整で精算するので確定申告はしません。')
     : ' 翌年以降も毎年3月に前年分を確定申告します。';
 
@@ -691,7 +685,7 @@ function render() {
     ['所得税', c.finalTax, 'var(--gov)'],
     ['社会保険', c.ssY + c.nationalY, 'var(--ins)'],
     ['労働保険', c.koyoY + c.tokuY, 'var(--labor)'],
-  ].filter(p => p[1] > 0);
+  ];
   $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? p[1] / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
   $('legend').innerHTML = parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')
     + (emp ? `<li>会社が別に負担 <span class="num">${yen(Math.max(0, c.companySs + c.laborY - c.koyoY))}</span></li>` : '');
@@ -734,9 +728,8 @@ function setSeg(k, v) {
 }
 // 条件を変えて該当が変わったら、該当するタブへ移る
 function update(fn) {
-  const tax = matchTax(state), lab = matchLab(state);
+  const lab = matchLab(state);
   fn();
-  if (matchTax(state) !== tax) state.tab = matchTax(state);
   if (matchLab(state) !== lab) state.labTab = matchLab(state);
   render();
 }
@@ -749,10 +742,6 @@ $('cond').addEventListener('change', e => {
 $('cond').addEventListener('input', e => {
   if (e.target.id === 'amt') update(() => { state.amt = Math.min(2000000, Math.max(0, Number(e.target.value) || 0)); });
   if (e.target.id === 'exp') update(() => { state.exp = Math.min(90, Math.max(0, Number(e.target.value) || 0)); });
-});
-$('tabs').addEventListener('click', e => {
-  const t = e.target.closest('[data-tab]');
-  if (t) { state.tab = t.dataset.tab; render(); }
 });
 $('labTabs').addEventListener('click', e => {
   const t = e.target.closest('[data-lab]');
@@ -799,13 +788,11 @@ function readQuery() {
   state.endMode = state.endM ? 1 : 0;
   if (state.endM) state.endSel = state.endM;
   clampEnd();
-  state.tab = TABS[state.kind].some(([k]) => k === q.get('tab')) ? q.get('tab') : matchTax(state);
   state.labTab = LAB_TABS[state.kind].some(([k]) => k === q.get('lab')) ? q.get('lab') : matchLab(state);
 }
 function writeQuery() {
   const q = new URLSearchParams();
   QUERY.forEach(([name, key]) => { if (state[key] !== DEFAULTS[key]) q.set(name, state[key]); });
-  if (state.tab !== matchTax(state)) q.set('tab', state.tab);
   if (state.labTab !== matchLab(state)) q.set('lab', state.labTab);
   const search = q.toString();
   try { history.replaceState(null, '', search ? `?${search}` : location.pathname); } catch { /* file:// など書き換えできない環境では何もしない */ }
