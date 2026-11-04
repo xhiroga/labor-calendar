@@ -174,6 +174,10 @@ a { color: inherit }
       <label><input type="radio" name="fil" id="fil-0" value="0"><span>しない</span></label>
       <label><input type="radio" name="fil" id="fil-1" value="1"><span>する (医療費控除、給与以外の所得が20万円超など)</span></label>
     </div></fieldset>
+    <fieldset class="field" data-only="contractor"><legend>消費税の申告</legend><div class="seg" data-k="vat">
+      <label><input type="radio" name="vat" id="v-0" value="0"><span>しない</span></label>
+      <label><input type="radio" name="vat" id="v-1" value="1"><span>する (インボイス登録、売上1,000万円超など)</span></label>
+    </div></fieldset>
     <fieldset class="field" data-only="officer contractor"><legend>労災保険の特別加入</legend><div class="seg" data-k="tk">
       <label><input type="radio" name="tk" id="tk-0" value="0"><span>しない</span></label>
       <label><input type="radio" name="tk" id="tk-1" value="1"><span>する</span></label>
@@ -218,16 +222,16 @@ a { color: inherit }
     <summary>計算の前提と出典</summary>
     <ul>
       <li>2026年1〜12月の概算です。実際の額は保険料の標準報酬月額、税額表、扶養、自治体で変わります。申告や手続きは税理士、社労士、窓口で確認してください。</li>
-      <li>給与は25日払い (翌月払いは月末締め、当月払いはその月の分をその月に払う)、賞与なし、扶養なし、協会けんぽ東京、前年も同額で働いた想定です。住民税、個人事業税、消費税は入れていません。</li>
+      <li>給与は25日払い (翌月払いは月末締め、当月払いはその月の分をその月に払う)、賞与なし、扶養なし、協会けんぽ東京、前年も同額で働いた想定です。住民税、個人事業税は入れていません。消費税は申告の矢印だけで、金額は入れていません。</li>
       <li>毎月の源泉所得税は、税額表の代わりに、基礎控除58万円、給与所得控除の最低65万円で年税額を出して12で割っています。年末調整や確定申告の年税額は令和8年分の改正 (基礎控除の特例、給与所得控除の最低74万円) で計算します。</li>
-      <li>業務委託は青色申告65万円控除の想定です。源泉徴収の対象かは報酬の種類で決まるので、発注元に確認してください。予定納税は前年の納税見込みが15万円以上のときに入ります。</li>
+      <li>業務委託は青色申告65万円控除の想定で、今年の開始は新しく開業する想定です。源泉徴収の対象かは報酬の種類で決まるので、発注元に確認してください。予定納税は前年の納税見込みが15万円以上のときに入ります。</li>
       <li>健康保険は3月分まで9.91%、4月分から9.85%。介護保険は3月分まで1.59%、4月分から1.62%。子ども・子育て支援金0.23%は4月分から。いずれも翌月の給与で引きます。厚生年金の上限は標準報酬65万円として計算します。</li>
       <li>雇用保険は令和8年度の一般の事業で、本人0.5%、会社0.85%。労災保険は「その他の各種事業」の0.3%を例にしています。年度更新の額は前年度の精算を省いています。</li>
       <li>国民健康保険は自治体ごとに違うので、(所得 − 43万円) × 12% + 6万円 (40〜64歳は少し上乗せ) のおおまかな目安で、軽減を入れていません。</li>
       <li>労働保険は雇用される人の制度です。業務委託のアニメーション制作作業従事者は、労災保険の第二種特別加入の対象で、保険料率は1000分の3です。図の特別加入は給付基礎日額1万円を例に、年10,950円を4月に納める形で描いています。年度の途中の加入と脱退は月数で割っています。納める時期と団体の会費は加入する団体によって違います。短時間の社会保険は学生以外の想定です (月8.8万円の賃金要件は2026年10月に撤廃)。有期雇用は、社会保険と雇用保険の対象になる長さの契約を想定しています (社会保険は2か月を超える見込み、雇用保険は31日以上の見込み)。この想定の中では、無期雇用と有期雇用の金額は同じです。</li>
       <li>確定申告が必要かどうかは、所得や控除で変わります。図の条件は主なものだけです。</li>
-      <li>今年の入社・開始は1日付けで、最初の支払いは翌月25日 (当月払いなら当月25日)、今年の収入はこの支払いだけの想定です。前職の収入、入社前の国民年金や国民健康保険、前年の所得による国民健康保険の違いは入れていません。翌年の納付や申告は、図の下に「翌年」として出します。金額は今年の料率で計算しています。年度更新の額は、賃金の締め日の違いを省いて、入社後の月数で計算しています。12月開始の最初の支払いの月の国民健康保険は入れていません。</li>
-      <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険、次の仕事の収入は入れていません。12月の給与を受けてからの退職と、年136万円以下の短時間の人の退職は年末調整で精算し、それ以外の途中退職は確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
+      <li>今年の入社・開始は1日付けで、最初の支払いは翌月25日 (当月払いなら当月25日)、今年の収入はこの支払いだけの想定です。前職の収入、入社前の国民年金や国民健康保険の金額、前年の所得による国民健康保険の違いは入れていません。翌年の納付や申告は、図の下に「翌年」として出します。金額は今年の料率で計算しています。年度更新の額は、賃金の締め日の違いを省いて、入社後の月数で計算しています。12月開始の最初の支払いの月の国民健康保険は入れていません。</li>
+      <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険の金額、次の仕事の収入は入れていません。12月の給与を受けてからの退職と、年136万円以下の短時間の人の退職は年末調整で精算し、それ以外の途中退職は確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
       <li>健康保険と厚生年金の資格は入社日に発生します。図の破線は、その確認の通知が受取側へ届く流れです。資格情報のお知らせは協会けんぽの場合の名称で、資格確認書はマイナ保険証を持たない人などに交付されます。</li>
       <li>翌年は、毎月のものを省いて、年に1回などの作業だけを出しています。金額が変わるものは金額を入れず、破線で示します。翌々年以降も同じ作業が毎年続く想定です。賃金が変わったときの月額変更届などは入れていません。納付書や納入通知書の時期は目安で、国民健康保険は自治体によって違います。</li>
       <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。年度の途中の加入と脱退は月数で割っています。事務組合の委託費は別です。</li>
@@ -241,6 +245,13 @@ a { color: inherit }
       <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2505.htm">納期の特例 (国税庁)</a> /
       <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2665.htm">年末調整の対象 (国税庁)</a> /
       <a href="https://www.nta.go.jp/publication/pamph/hotei/minashi.pdf">源泉徴収票のみなし提出 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/gensen/annai/1648_01.htm">扶養控除等申告書 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hotei/7431.htm">報酬の支払調書 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/hotei/24100002.htm">給与の支払明細書 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2040.htm">予定納税 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2090.htm">開業の届出 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/shinkoku/annai/09.htm">青色申告の承認申請 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/qa/08.htm">消費税の申告 (国税庁)</a> /
       <a href="https://jsite.mhlw.go.jp/ishikawa-roudoukyoku/content/contents/tokubetukanyuu_2syu_3syu_hokenritukaitehyou_r6.4.1.pdf">第二種特別加入保険料率表 (石川労働局)</a> /
       <a href="https://www.mhlw.go.jp/hourei/doc/tsuchi/T260319S0080.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
       <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/002225902.pdf">兼務役員雇用実態証明書 (福岡労働局)</a> /
@@ -249,8 +260,18 @@ a { color: inherit }
       <a href="https://www.nenkin.go.jp/service/kounen/tekiyo/hihokensha2/20201204.html">標準報酬等の決定の通知 (日本年金機構)</a> /
       <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20121017.html">定時決定 (日本年金機構)</a> /
       <a href="https://www.nenkin.go.jp/oshirase/taisetu/jigyosho/2026/202610/100104.html">賃金要件の撤廃 (日本年金機構)</a> /
+      <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/nofu/20121121.html">保険料の納付期限 (日本年金機構)</a> /
+      <a href="https://www.nenkin.go.jp/tokusetsu/santei.files/teisyutsu.onegai.pdf">決定の本人への通知 (日本年金機構)</a> /
+      <a href="https://www.nenkin.go.jp/service/kokunen/kanyu/20140710-03.html">退職時の国民年金 (日本年金機構)</a> /
+      <a href="https://www.nenkin.go.jp/oshirase/taisetu/kojin/2026/202609/0924.html">国民年金の控除証明書 (日本年金機構)</a> /
+      <a href="https://www.kyoukaikenpo.or.jp/faq/voluntary_continuation/003/index.html">任意継続 (協会けんぽ)</a> /
+      <a href="https://www.city.shinjuku.lg.jp/shinsei/shinsei_00323.html">国保の脱退 (新宿区)</a> /
+      <a href="https://www.city.shinjuku.lg.jp/shinsei/shinsei_00322.html">国保の加入 (新宿区)</a> /
       <a href="https://www.kyoukaikenpo.or.jp/faq/mynumber_insurance_card/001/index.html">マイナ保険証・資格確認書 (協会けんぽ)</a> /
-      <a href="https://jsite.mhlw.go.jp/hyogo-roudoukyoku/roudoukyoku/_105009/juugyouinnnootetuduki.html">雇用保険の手続き (兵庫労働局)</a>
+      <a href="https://jsite.mhlw.go.jp/hyogo-roudoukyoku/roudoukyoku/_105009/juugyouinnnootetuduki.html">雇用保険の手続き (兵庫労働局)</a> /
+      <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000147331.html">雇用保険の加入手続 (厚生労働省)</a> /
+      <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139508.html">基本手当 (厚生労働省)</a> /
+      <a href="https://jsite.mhlw.go.jp/kyoto-roudoukyoku/hourei_seido_tetsuzuki/roudou_hoken/hourei_seido/rodo04.html">特別加入の手続き (京都労働局)</a>
     </p>
   </details>
 </div>
@@ -369,7 +390,7 @@ function calc(s) {
 const $ = id => document.getElementById(id);
 const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
 const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
-const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, cur: 0, exp: 20, src: 1, tk: 0, fil: 0, labTab: 'both' };
+const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, cur: 0, exp: 20, src: 1, vat: 0, tk: 0, fil: 0, labTab: 'both' };
 const LAB_TABS = {
   employee: [['both', '雇用保険 + 労災保険'], ['rosai', '労災保険のみ']],
   officer: [['officerNone', '加入なし'], ['tokubetsu1', '労災保険に特別加入']],
@@ -467,7 +488,7 @@ function seq(cols, byMonth, next = {}, repeats = false) {
   const months = MONTHS.map(m => block(byMonth, m)).join('');
   const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m)).join('');
   const tail = nextMonths ? `<div class="sep">翌年（毎月分除く）</div>${nextMonths}${repeats ? '<div class="sep">翌々年以降も同じ作業が毎年続きます</div>' : ''}` : '';
-  return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c] || ''}${c}</span>`).join('')}</div></div>${months}${tail}</div>`;
+  return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c.split('・')[0]] || ''}${c}</span>`).join('')}</div></div>${months}${tail}</div>`;
 }
 function add(map, m, sort, e) { (map[m] = map[m] || []).push({ ...e, sort }); }
 // 13 月以降は翌年のブロックへ
@@ -496,18 +517,24 @@ function render() {
   $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
 
   // 所得税
-  const tax = {}, toku = tokuOn(s), files = emp || c.w > 0;
+  const tax = {}, toku = tokuOn(s), files = emp || c.w > 0, payLabel = emp ? `${pay} (明細を交付)` : pay;
   // 徴収高計算書は税額が 0 円でも出す。納付の矢印の直前に並べる
   const filing = (map, m) => add(map, m, m === 1 && toku ? 19 : 9, ev(m === 1 && toku ? '20日' : '10日', 'co', 'gov', '徴収高計算書を提出', 0, 1, { paper: true }));
   MONTHS.forEach(m => {
     if (files && (toku ? (m === 7 ? MONTHS.some(x => x <= 6 && c.active(x)) : m === 1 && !c.start) : (m === 1 ? !c.start : c.active(m - 1)))) filing(tax, m);
-    if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
+    if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', payLabel, c.amt - c.w, c.amt));
     if (c.payTo[m]) {
       const date = toku ? (m === 1 ? '20日' : '10日') : '10日';
       add(tax, m, m === 1 && toku ? 20 : 10, ev(date, 'co', 'gov', toku ? (m === 1 ? '前年7〜12月分の源泉所得税を納付' : '1〜6月分の源泉所得税を納付') : '前月分の源泉所得税を納付', c.payTo[m], c.amt));
     }
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
+  // 個人番号は給与支払報告書、資格取得届、報酬の支払調書に書く
+  if (c.start && (emp || c.w)) add(tax, c.start, 2, ev('1日', 'me', 'co', '個人番号', 0, 1, { paper: true }));
+  if (!emp && c.start) add(tax, c.start, 3, ev('開始時', 'me', 'gov', '開業届 (その年分の確定申告期限まで)', 0, 1, { paper: true }));
+  // 扶養控除等申告書は毎年、その年の最初の給与の前日までに出す
+  const fuyo = map => add(map, 1, 24, ev('24日', 'me', 'co', '扶養控除等申告書 (最初の給与の前日まで)', 0, 1, { paper: true }));
+  if (emp && !c.start) fuyo(tax);
   // 金額が図の条件だけでは決まらない確定申告は、納付と還付を破線で出す
   const filed = map => {
     add(map, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
@@ -530,11 +557,20 @@ function render() {
     if (c.prevBalance > 0) add(tax, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.prevBalance, c.amt));
     if (c.prevBalance < 0) add(tax, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.prevBalance, c.amt));
     if (c.yotei) {
+      add(tax, 6, 15, ev('15日', 'gov', 'me', '予定納税額の通知', 0, 1, { paper: true }));
       add(tax, 7, 28, ev('31日', 'me', 'gov', '予定納税 1期', c.yotei, c.amt));
       add(tax, 11, 28, ev('30日', 'me', 'gov', '予定納税 2期', c.yotei, c.amt));
     }
   }
   const taxNext = {};
+  if (emp && !c.end) fuyo(taxNext);
+  // 青色申告承認申請書は開始から 2 か月以内。1 月 15 日までの開始は 3 月 15 日まで
+  if (!emp && c.start) place(tax, taxNext, c.start === 1 ? 3 : c.start + 1, 14, ev(c.start === 1 ? '15日' : '2か月以内', 'me', 'gov', '青色申告承認申請書', 0, 1, { paper: true }));
+  // 消費税の金額は売上と経費の内訳で決まるので入れない
+  if (!emp && s.vat) {
+    if (!c.start) add(tax, 3, 31, ev('31日', 'me', 'gov', '前年分の消費税の確定申告と納付', 0, 1, { paper: true }));
+    if (c.n) add(taxNext, 3, 31, ev('31日', 'me', 'gov', '今年分の消費税の確定申告と納付', 0, 1, { paper: true }));
+  }
   // 前年に支払いがあれば 1 月末までに出す。源泉徴収票は在職者の分で、退職者には退職のときに渡す
   // 2027 年 1 月に出す令和 8 年分からは、給与支払報告書を出せば税務署への源泉徴収票と合計表は要らない (みなし提出)
   const yearEndDocs = (map, slip, total) => {
@@ -544,8 +580,12 @@ function render() {
   };
   if (emp && !c.start) yearEndDocs(tax, true, true);
   if (emp && c.n) yearEndDocs(taxNext, !c.end, false);
+  // 報酬は同じ相手に年 5 万円を超えると支払調書を出し、その分を書いた合計表を添える
+  const payReport = map => add(map, 1, 33, ev('31日', 'co', 'gov', '前年分の報酬の支払調書・法定調書合計表', 0, 1, { paper: true }));
+  if (!emp && c.w && !c.start && c.fullYear > 50000) payReport(tax);
+  if (!emp && c.w && c.year > 50000) payReport(taxNext);
   if (emp && c.end) place(tax, taxNext, c.end + 1, 26, ev('1か月以内', 'co', 'me', '給与所得の源泉徴収票', 0, 1, { paper: true }));
-  if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
+  if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', payLabel, c.amt - c.w, c.amt));
   if (files && (toku ? MONTHS.some(m => m >= 7 && c.active(m)) : c.end && c.active(12))) filing(taxNext, 1);
   if (files && c.end === 12 && !c.sameMonth) filing(taxNext, toku ? 7 : 2);
   if (files && toku && !c.end) filing(taxNext, 7);
@@ -575,6 +615,7 @@ function render() {
     } else {
       if (!emp && c.gap >= 150000) {
         const y = Math.floor(c.gap / 3 / 100) * 100;
+        add(taxNext, 6, 15, ev('15日', 'gov', 'me', '予定納税額の通知', 0, 1, { paper: true }));
         add(taxNext, 7, 28, ev('31日', 'me', 'gov', '予定納税 1期', y, c.amt));
         add(taxNext, 11, 28, ev('30日', 'me', 'gov', '予定納税 2期', y, c.amt));
       }
@@ -605,6 +646,7 @@ function render() {
     $('seqLab').innerHTML = `<div class="seq"><p class="none">本人の労働保険の支払いはありません。仕事中のけがの補償も失業手当もありません。</p></div>`;
   } else if (s.labTab === 'tokubetsu1') {
     const lab = {};
+    if (c.start) add(lab, c.start, 0, ev('開始前', 'co', 'gov', '特別加入の申請 (事務組合経由)', 0, 1, { paper: true }));
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '役員報酬', c.amt, c.amt)));
     if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', Math.round(10950 * c.laborMonths / 12), c.fullYear));
     const labNext = {};
@@ -616,6 +658,7 @@ function render() {
     $('labNote').textContent = '給付基礎日額1万円の例で年 10,950円。雇用保険はありません。従業員の分の労働保険は別に納めます。';
   } else if (s.labTab === 'tokubetsu') {
     const lab = {};
+    if (c.start) add(lab, c.start, 0, ev('開始前', 'me', 'gov', '特別加入の申請 (団体経由)', 0, 1, { paper: true }));
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt)));
     Object.entries(c.tokuPays).forEach(([m, v]) => add(lab, Number(m), 10, ev(m === '4' ? '4月頃' : '開始時', 'me', 'gov', '特別加入の保険料 (団体経由)', v, c.fullYear)));
     const labNext = {};
@@ -629,7 +672,11 @@ function render() {
     const koyoY = MONTHS.reduce((a, m) => a + koyo(m), 0);
     const lab = {}, labNext = {};
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', withKoyo ? '給与 (雇用保険を天引き)' : '給与', c.amt - koyo(m), c.amt)));
-    if (withKoyo && c.start) place(lab, labNext, c.start + 1, 9, ev('10日', 'co', 'gov', '雇用保険被保険者資格取得届', 0, 1, { paper: true }));
+    if (withKoyo && c.start) {
+      place(lab, labNext, c.start + 1, 9, ev('10日', 'co', 'gov', '雇用保険被保険者資格取得届', 0, 1, { paper: true }));
+      place(lab, labNext, c.start + 1, 9.1, ev('届出後', 'gov', 'co', '資格取得等確認通知書・被保険者証', 0, 1, { paper: true }));
+      place(lab, labNext, c.start + 1, 9.2, ev('届出後', 'co', 'me', '確認通知書・被保険者証を本人へ', 0, 1, { paper: true }));
+    }
     if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', c.start || c.end ? `年度更新で${c.laborMonths}か月分を納付` : '年度更新で1年分を納付', Math.round(c.amt * c.laborMonths * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
     if (c.start) add(lab, c.start, 1, ev('1日', 'me', 'me', '労災保険の補償開始 (手続き不要)', 0, 1, { mark: true }));
     if (c.end) {
@@ -637,6 +684,7 @@ function render() {
       if (withKoyo) {
         place(lab, labNext, c.end + 1, 9, ev('10日', 'co', 'gov', '雇用保険被保険者資格喪失届・離職証明書', 0, 1, { paper: true }));
         place(lab, labNext, c.end + 1, 11, ev('その後', 'co', 'me', '雇用保険被保険者離職票', 0, 1, { paper: true }));
+        place(lab, labNext, c.end + 1, 12, ev('その後', 'me', 'gov', '離職票を出して基本手当の手続き', 0, 1, { paper: true }));
       }
     }
     {
@@ -647,7 +695,7 @@ function render() {
       const carried = c.start >= 7 ? (c.end || 15) - c.start + 1 : 0, future = c.end ? 0 : 12;
       if (carried + future) add(labNext, 7, 10, ev('10日', 'co', 'gov', carried ? `年度更新で今年度の${carried}か月分${future ? ' + 翌年度分' : ''}を納付` : '年度更新で1年分を納付', Math.round(c.amt * (carried + future) * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
     }
-    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext, !c.end);
+    $('seqLab').innerHTML = seq([payer, me, withKoyo ? '労働局・ハローワーク' : '労働局'], lab, labNext, !c.end);
     $('labNote').textContent = withKoyo
       ? `年 ${yen(koyoY)} が本人負担の雇用保険です。労災保険は全額を会社が払います。`
       : '雇用保険には入りません。労災保険は全額を会社が払います。';
@@ -660,11 +708,20 @@ function render() {
     add(soc, c.start, 5, ev('5日', 'co', 'gov', '健康保険・厚生年金保険被保険者資格取得届', 0, 1, { paper: true }));
     add(soc, c.start, 6, ev('届出後', 'gov', 'co', '資格取得確認および標準報酬決定通知書', 0, 1, { paper: true }));
     add(soc, c.start, 7, ev('届出後', 'co', 'me', '資格の通知 (資格情報のお知らせ・資格確認書)', 0, 1, { paper: true }));
+    add(soc, c.start, 8, ev('14日以内', 'me', 'gov', '国保の脱退届 (直前が国保の人)', 0, 1, { paper: true }));
   }
+  if (!c.hasSS && c.start && c.amt) add(soc, c.start, 5, ev('14日以内', 'me', 'gov', '国保・国民年金の加入 (直前が会社の社保の人)', 0, 1, { paper: true }));
   if (c.hasSS && c.end) {
     add(soc, c.end, 99, ev('退職時', 'me', 'co', '資格確認書を返却 (交付を受けた人)', 0, 1, { paper: true }));
     place(soc, socNext, c.end + 1, 5, ev('5日', 'co', 'gov', '健康保険・厚生年金保険被保険者資格喪失届', 0, 1, { paper: true }));
+    place(soc, socNext, c.end + 1, 6, ev('14日以内', 'me', 'gov', '国保・国民年金の加入 (次の勤め先がないとき)', 0, 1, { paper: true }));
+    place(soc, socNext, c.end + 1, 7, ev('20日以内', 'me', 'gov', '任意継続なら協会けんぽへ', 0, 1, { paper: true }));
   }
+  // 保険料は毎月 20 日頃に届く告知書の額を月末までに納める
+  const premium = (cur, next, m, v) => {
+    place(cur, next, m, 20, ev('20日頃', 'gov', 'co', '前月分の保険料の納入告知書', 0, 1, { paper: true }));
+    place(cur, next, m, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', v, c.amt));
+  };
   const deducted = m => {
     if (!c.sameMonth) return '前月分を';
     const first = m === c.start, last = m === c.end;
@@ -673,36 +730,41 @@ function render() {
   MONTHS.filter(c.active).forEach(m => {
     add(soc, m, 25, ev('25日', 'co', 'me', c.hasSS && deducted(m) ? `${pay} (${deducted(m)}天引き)` : pay, c.amt - c.ss(m).me, c.amt));
     if (c.hasSS) {
-      if (c.ss(m).gov) add(soc, m, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', c.ss(m).gov, c.amt));
+      if (c.ss(m).gov) premium(soc, socNext, m, c.ss(m).gov);
     } else {
       add(soc, m, 30, ev('月末', 'me', 'gov', '国民年金', c.nenkin(m), c.amt));
       if (c.kokuho(m)) add(soc, m, 31, ev('月末', 'me', 'gov', '国民健康保険 (目安)', c.kokuho(m), c.amt));
     }
   });
-  if (c.hasSS && c.sameMonth && c.end) place(soc, socNext, c.end + 1, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', c.ssRaw(c.end + 1).all, c.amt));
+  if (c.hasSS && c.sameMonth && c.end) premium(soc, socNext, c.end + 1, c.ssRaw(c.end + 1).all);
   if (lastPayNext) {
     const r = c.ssRaw(12);
     add(socNext, 1, 25, ev('25日', 'co', 'me', c.hasSS ? `${pay} (前月分を天引き)` : pay, c.amt - r.me, c.amt));
-    if (c.hasSS) add(socNext, 1, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', r.all, c.amt));
+    if (c.hasSS) premium(socNext, socNext, 1, r.all);
     else add(socNext, 1, 30, ev('月末', 'me', 'gov', '国民年金', 17920, c.amt));
   }
   const santei = (map, applied) => {
     add(map, 7, 10, ev('10日', 'co', 'gov', '健康保険・厚生年金保険被保険者報酬月額算定基礎届', 0, 1, { paper: true }));
-    if (applied) add(map, 9, 1, ev('9月', 'me', 'me', '新しい標準報酬月額を適用 (9月分から)', 0, 1, { mark: true }));
+    if (!applied) return;
+    add(map, 7, 11, ev('届出後', 'gov', 'co', '標準報酬決定通知書', 0, 1, { paper: true }));
+    add(map, 7, 12, ev('届出後', 'co', 'me', '新しい標準報酬月額を本人へ通知', 0, 1, { paper: true }));
+    add(map, 9, 1, ev('9月', 'me', 'me', '新しい標準報酬月額を適用 (9月分から)', 0, 1, { mark: true }));
   };
   const notices = map => {
     add(map, 4, 1, ev('4月頃', 'gov', 'me', '国民年金保険料の納付書', 0, 1, { paper: true }));
     add(map, 6, 1, ev('6月頃', 'gov', 'me', '国民健康保険料の納入通知書', 0, 1, { paper: true }));
   };
+  const pensionProof = map => add(map, 10, 20, ev('10月', 'gov', 'me', '国民年金の控除証明書', 0, 1, { paper: true }));
   if (c.hasSS) {
     // 7 月 1 日に在籍している人が対象。6 月 1 日以降の資格取得と 6 月 30 日以前の退職は除く。9 月より前に辞めると新しい額は使わない
     if ((!c.start || c.start <= 5) && (!c.end || c.end >= 7)) santei(soc, !c.end || c.end >= 9);
     if (!c.end) santei(socNext, true);
   } else if (c.amt) {
     if (!c.start && (!c.end || c.end >= 6)) notices(soc);
-    if (!c.end) notices(socNext);
+    if (MONTHS.some(m => m <= 9 && c.nenkin(m))) pensionProof(soc);
+    if (!c.end) { notices(socNext); pensionProof(socNext); }
   }
-  $('seqSoc').innerHTML = seq([payer, me, c.hasSS ? '年金事務所' : '年金機構・市区町村'], soc, socNext, !c.end);
+  $('seqSoc').innerHTML = seq([payer, me, c.hasSS ? '年金事務所・市区町村' : '年金機構・市区町村'], soc, socNext, !c.end);
   $('socNote').textContent = c.hasSS
     ? `健康保険と厚生年金に入り、会社と折半します。本人 年 ${yen(c.ssY)}、会社 年 ${yen(c.companySs)}。`
     : `会社の社会保険に入らないので、国民年金と国民健康保険を自分で払います。年 ${yen(c.nationalY)} (国保は目安)。`;
@@ -791,6 +853,7 @@ const QUERY = [
   ['cur', 'cur', v => intIn(v, 0, 1)],
   ['exp', 'exp', v => intIn(v, 0, 90)],
   ['src', 'src', v => intIn(v, 0, 2)],
+  ['vat', 'vat', v => intIn(v, 0, 1)],
   ['tk', 'tk', v => intIn(v, 0, 1)],
   ['fil', 'fil', v => intIn(v, 0, 1)],
 ];
