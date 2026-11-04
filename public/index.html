@@ -443,6 +443,7 @@ function place(cur, next, m, sort, e) { if (m > 12) add(next, m - 12, sort, e); 
 
 function render() {
   syncSeg();
+  writeQuery();
   $('startWrap').hidden = !state.startMode;
   $('endWrap').hidden = !state.endMode;
   const s = state, c = calc(s), emp = c.emp;
@@ -669,6 +670,57 @@ $('labTabs').addEventListener('click', e => {
   const t = e.target.closest('[data-lab]');
   if (t) { state.labTab = t.dataset.lab; render(); }
 });
+
+// 条件を URL に写す。既定値と同じ項目は書かない
+const QUERY = [
+  ['corp', 'corp', v => ['llc', 'kk'].includes(v) ? v : null],
+  ['work', 'recv', v => ['permanent', 'fixed', 'llcRep', 'kkRep', 'contractor'].includes(v) ? v : null],
+  ['start', 'startM', v => intIn(v, 0, 12)],
+  ['end', 'endM', v => intIn(v, 0, 12)],
+  ['amt', 'amt', v => intIn(v, 0, 2000000)],
+  ['age', 'age', v => intIn(v, 0, 1)],
+  ['hours', 'hours', v => [0, 20, 30].includes(intIn(v, 0, 30)) ? Number(v) : null],
+  ['big', 'big', v => intIn(v, 0, 1)],
+  ['toku', 'toku', v => intIn(v, 0, 1)],
+  ['exp', 'exp', v => intIn(v, 0, 90)],
+  ['src', 'src', v => intIn(v, 0, 1)],
+  ['tk', 'tk', v => intIn(v, 0, 1)],
+];
+function intIn(v, min, max) {
+  if (!/^\d+$/.test(v)) return null;
+  const n = Number(v);
+  return n >= min && n <= max ? n : null;
+}
+const DEFAULTS = { ...state };
+function readQuery() {
+  let q;
+  try { q = new URLSearchParams(location.search); } catch { return; }
+  QUERY.forEach(([name, key, parse]) => {
+    if (!q.has(name)) return;
+    const v = parse(q.get(name));
+    if (v !== null) state[key] = v;
+  });
+  // 肩書きと会社の種類が食い違うときは、肩書きに合わせる
+  if (state.recv === 'llcRep') state.corp = 'llc';
+  if (state.recv === 'kkRep') state.corp = 'kk';
+  state.kind = state.recv === 'llcRep' || state.recv === 'kkRep' ? 'officer' : state.recv === 'contractor' ? 'contractor' : 'employee';
+  state.startMode = state.startM ? 1 : 0;
+  if (state.startM) state.startSel = state.startM;
+  state.endMode = state.endM ? 1 : 0;
+  if (state.endM) state.endSel = state.endM;
+  clampEnd();
+  state.tab = TABS[state.kind].some(([k]) => k === q.get('tab')) ? q.get('tab') : matchTax(state);
+  state.labTab = LAB_TABS[state.kind].some(([k]) => k === q.get('lab')) ? q.get('lab') : matchLab(state);
+}
+function writeQuery() {
+  const q = new URLSearchParams();
+  QUERY.forEach(([name, key]) => { if (state[key] !== DEFAULTS[key]) q.set(name, state[key]); });
+  if (state.tab !== matchTax(state)) q.set('tab', state.tab);
+  if (state.labTab !== matchLab(state)) q.set('lab', state.labTab);
+  const search = q.toString();
+  try { history.replaceState(null, '', search ? `?${search}` : location.pathname); } catch { /* file:// など書き換えできない環境では何もしない */ }
+}
+readQuery();
 sync(); render();
 </script>
 </body>
