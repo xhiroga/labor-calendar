@@ -12,7 +12,7 @@ img { max-width: 100% }
 /* Layout: 帳票の罫線に載せた縦 3 列のシーケンス図を、月ごとのブロックで 12 段積む */
 :root {
   --bg: #f4f8f5; --panel: #ffffff; --fg: #14241e; --muted: #557066; --rule: #bdd3c7; --soft: #e3eee8;
-  --pay: #0b6b4f; --gov: #b5322a; --ins: #c98a12; --labor: #3b6ea8;
+  --pay: #0b6b4f; --gov: #b5322a; --local: #7b4fa3; --ins: #c98a12; --labor: #3b6ea8;
   --body: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
   --num: "BIZ UDGothic", "Hiragino Sans", monospace;
 }
@@ -127,6 +127,10 @@ a { color: inherit }
       <label><input type="radio" name="toku" id="t-1" value="1"><span>承認済み (年2回納付)</span></label>
       <label><input type="radio" name="toku" id="t-0" value="0"><span>未承認 (毎月納付)</span></label>
     </div></fieldset>
+    <fieldset class="field" data-only="employee officer"><legend>住民税の納期特例<span class="info" tabindex="0" role="img" aria-label="給与を受け取る人が常時10人未満で、市区町村に申請して承認された会社が使えます。所得税の納期特例とは別の申請です。納入は6〜11月分が12月10日、12〜翌年5月分が6月10日です。">i<span class="tip" aria-hidden="true">給与を受け取る人が常時10人未満で、市区町村に申請して承認された会社が使えます。所得税の納期特例とは別の申請です。納入は6〜11月分が12月10日、12〜翌年5月分が6月10日です。</span></span></legend><div class="seg" data-k="jt">
+      <label><input type="radio" name="jt" id="j-1" value="1"><span>承認済み (年2回納入)</span></label>
+      <label><input type="radio" name="jt" id="j-0" value="0"><span>未承認 (毎月納入)</span></label>
+    </div></fieldset>
     <fieldset class="field" data-only="employee officer"><legend>給与の支払い</legend><div class="seg" data-k="cur">
       <label><input type="radio" name="cur" id="cur-0" value="0"><span>翌月払い</span></label>
       <label><input type="radio" name="cur" id="cur-1" value="1"><span>当月払い</span></label>
@@ -191,7 +195,7 @@ a { color: inherit }
   </div>
 
   <section>
-    <h2 class="hlogo"><a class="logo" href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/shotoku.htm" target="_blank" rel="noopener" title="国税庁ホームページ「所得税」へ"><img src="nta-symbol.svg" height="28" alt="税に関するシンボルマーク。国税庁ホームページ「所得税」へ"></a>所得税</h2>
+    <h2 class="hlogo"><a class="logo" href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/shotoku.htm" target="_blank" rel="noopener" title="国税庁ホームページ「所得税」へ"><img src="nta-symbol.svg" height="28" alt="税に関するシンボルマーク。国税庁ホームページ「所得税」へ"></a>所得税・住民税</h2>
     <div class="why" id="taxWhy"></div>
     <p class="note" id="taxNote"></p>
     <div id="seqTax"></div>
@@ -222,8 +226,10 @@ a { color: inherit }
     <summary>計算の前提と出典</summary>
     <ul>
       <li>2026年1〜12月の概算です。実際の額は保険料の標準報酬月額、税額表、扶養、自治体で変わります。申告や手続きは税理士、社労士、窓口で確認してください。</li>
-      <li>給与は25日払い (翌月払いは月末締め、当月払いはその月の分をその月に払う)、賞与なし、扶養なし、協会けんぽ東京、前年も同額で働いた想定です。住民税、個人事業税は入れていません。消費税は申告の矢印だけで、金額は入れていません。</li>
+      <li>給与は25日払い (翌月払いは月末締め、当月払いはその月の分をその月に払う)、賞与なし、扶養なし、協会けんぽ東京、前年も同額で働いた想定です。消費税は申告の矢印だけで、金額は入れていません。</li>
       <li>毎月の源泉所得税は、税額表の代わりに、基礎控除58万円、給与所得控除の最低65万円で年税額を出して12で割っています。年末調整や確定申告の年税額は令和8年分の改正 (基礎控除の特例、給与所得控除の最低74万円) で計算します。</li>
+      <li>住民税は前年の所得に対して (所得 − 43万円 − 社会保険料) × 10% + 5,000円 を目安にしています。所得45万円以下は0円です。調整控除と自治体の違いは入れていません。雇用と役員は給与から引いて会社が納める形 (特別徴収)、業務委託は本人が年4回納める形 (普通徴収、23区の6・8・10・1月) で描いています。今年の入社・開始は前年の所得がない想定で、翌年6月から納めます。1〜4月の退職は残りを最後の給与で一括で引き、6〜12月の退職は残りを本人が納める形で描いています。</li>
+      <li>個人事業税は (売上 − 経費 − 290万円) × 5% を目安にしています。法定業種の想定で、率は業種によって違います。</li>
       <li>業務委託は青色申告65万円控除の想定で、今年の開始は新しく開業する想定です。源泉徴収の対象かは報酬の種類で決まるので、発注元に確認してください。予定納税は前年の納税見込みが15万円以上のときに入ります。</li>
       <li>健康保険は3月分まで9.91%、4月分から9.85%。介護保険は3月分まで1.59%、4月分から1.62%。子ども・子育て支援金0.23%は4月分から。いずれも翌月の給与で引きます。厚生年金の上限は標準報酬65万円として計算します。</li>
       <li>雇用保険は令和8年度の一般の事業で、本人0.5%、会社0.85%。労災保険は「その他の各種事業」の0.3%を例にしています。年度更新の額は前年度の精算を省いています。</li>
@@ -236,7 +242,7 @@ a { color: inherit }
       <li>翌年は、毎月のものを省いて、年に1回などの作業だけを出しています。金額が変わるものは金額を入れず、破線で示します。翌々年以降も同じ作業が毎年続く想定です。賃金が変わったときの月額変更届などは入れていません。納付書や納入通知書の時期は目安で、国民健康保険は自治体によって違います。</li>
       <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。年度の途中の加入と脱退は月数で割っています。事務組合の委託費は別です。</li>
     </ul>
-    <p>労働保険の見出しのロゴは厚生労働省ホームページへ、社会保険の見出しの<a href="https://www.nenkin.go.jp/info/kihonjoho/mark.html">シンボルマーク (日本年金機構)</a>は日本年金機構ホームページへのリンクです。所得税の見出しのマークは、所得税の所轄を示すために<a href="https://www.nta.go.jp/chuijiko/tax_symbol.htm">税に関するシンボルマーク (国税庁)</a>を引用しています。画像は<a href="https://commons.wikimedia.org/wiki/File:%E5%9B%BD%E7%A8%8E%E5%BA%81.svg">Wikimedia Commons の File:国税庁.svg</a> (パブリックドメインと表記) です。このページは厚生労働省、国税庁、日本年金機構が作成したものではなく、これらの機関の公認を受けたものでも、見解を示すものでもありません。</p>
+    <p>労働保険の見出しのロゴは厚生労働省ホームページへ、社会保険の見出しの<a href="https://www.nenkin.go.jp/info/kihonjoho/mark.html">シンボルマーク (日本年金機構)</a>は日本年金機構ホームページへのリンクです。所得税・住民税の見出しのマークは、所得税の所轄を示すために<a href="https://www.nta.go.jp/chuijiko/tax_symbol.htm">税に関するシンボルマーク (国税庁)</a>を引用しています。画像は<a href="https://commons.wikimedia.org/wiki/File:%E5%9B%BD%E7%A8%8E%E5%BA%81.svg">Wikimedia Commons の File:国税庁.svg</a> (パブリックドメインと表記) です。このページは厚生労働省、国税庁、日本年金機構が作成したものではなく、これらの機関の公認を受けたものでも、見解を示すものでもありません。</p>
     <p>出典:
       <a href="https://jsite.mhlw.go.jp/yamagata-roudoukyoku/koyouhoken-20260316.html">雇用保険料率 (山形労働局)</a> /
       <a href="https://www.kyoukaikenpo.or.jp/g7/cat330/sb3130/r08/">協会けんぽ 令和8年度の保険料率</a> /
@@ -252,6 +258,10 @@ a { color: inherit }
       <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2090.htm">開業の届出 (国税庁)</a> /
       <a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/shinkoku/annai/09.htm">青色申告の承認申請 (国税庁)</a> /
       <a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/qa/08.htm">消費税の申告 (国税庁)</a> /
+      <a href="https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju/tokubetsu/tetsuzuki">特別徴収の手続き (東京都主税局)</a> /
+      <a href="https://www.city.shinjuku.lg.jp/hoken/file04_00007.html">特別徴収の納期の特例 (新宿区)</a> /
+      <a href="https://www.city.shinjuku.lg.jp/hoken/file04_03_00001.html">住民税の非課税と納期 (新宿区)</a> /
+      <a href="https://www.tax.metro.tokyo.lg.jp/kazei/work/kojin_ji">個人事業税 (東京都主税局)</a> /
       <a href="https://jsite.mhlw.go.jp/ishikawa-roudoukyoku/content/contents/tokubetukanyuu_2syu_3syu_hokenritukaitehyou_r6.4.1.pdf">第二種特別加入保険料率表 (石川労働局)</a> /
       <a href="https://www.mhlw.go.jp/hourei/doc/tsuchi/T260319S0080.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
       <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/002225902.pdf">兼務役員雇用実態証明書 (福岡労働局)</a> /
@@ -361,6 +371,26 @@ function calc(s) {
   const prevGap = incomeTax(prevIncome - basicDeduction(prevIncome) - prevSocial) - w * 12;
   // 雇用と役員の前年分は年末調整で済んでいる前提。今年の途中で辞めても前年の還付は変わらない
   const prevAdjust = emp && !start && fullYear <= 20000000 ? Math.max(0, -prevGap) : 0;
+  // 住民税は前年の所得にかかり、6 月から翌年 5 月に納める。所得割 10% + 均等割 5,000 円の目安で、調整控除と自治体の差は入れない
+  const juminOf = (y, social) => {
+    const income = emp ? y - salaryDeduction(y, 650000) : incomeOf(y);
+    return income <= 450000 ? 0 : Math.floor(Math.max(0, income - 430000 - social) * .1 / 100) * 100 + 5000;
+  };
+  const juminPrev = start ? 0 : juminOf(fullYear, prevSocial), juminNext = juminOf(year, socialDed), juminM = Math.floor(juminPrev / 12);
+  const lastPay = end ? end + lag : 0;
+  // 給与から引く住民税。m は支払月。1〜4 月に辞めると残りを最後の給与で一括で引き、新しい年度の分は本人が納める
+  const juminPay = m => {
+    if (!emp || !juminM || !active(m) || (end && end <= 5 && m >= 6)) return 0;
+    return end && end <= 4 && m === lastPay ? juminM * (6 - m) : juminM;
+  };
+  // 6〜12 月に辞めると、翌年 5 月までの残りを本人が納める
+  const juminRest = end >= 6 ? juminM * Math.max(0, 17 - lastPay) : 0;
+  const juminY = emp
+    ? MONTHS.reduce((a, m) => a + juminPay(m), 0) + (end && end <= 5 ? Math.floor(juminPrev / 4) * 3 : end + 2 <= 12 ? juminRest : 0)
+    : Math.floor(juminPrev / 4) * 4;
+  // 個人事業税は (売上 − 経費 − 290 万円) × 5% の目安。法定業種の想定で、控除は営業した月数で割る
+  const jigyoOf = (y, months) => emp ? 0 : Math.max(0, Math.floor((y * (1 - s.exp / 100) - 2900000 * months / 12) * .05 / 100) * 100);
+  const jigyoPrev = start ? 0 : jigyoOf(fullYear, 12), jigyoNext = jigyoOf(year, n);
   const yotei = (!start && !emp && prevGap >= 150000) ? Math.floor(prevGap / 3 / 100) * 100 : 0;
   const prevBalance = tab === 'adjust' ? 0 : prevGap - yotei * 2;
   const balance = tab === 'adjust' ? 0 : gap - yotei * 2;
@@ -382,15 +412,15 @@ function calc(s) {
     : start <= 6 ? Math.max(0, lastFy - Math.max(4, start) + 1) + (start < 4 ? Math.min(end || 3, 3) - start + 1 : 0) : 0;
   const laborY = officer ? (s.tk ? Math.round(10950 * laborMonths / 12) : 0) : emp ? Math.round(amt * laborMonths * ((hasKoyo ? 1.35 : 0) + .3) / 100) : 0;
   const companySs = MONTHS.reduce((a, m) => a + ss(m).all - ss(m).me, 0);
-  return { tokuPays, sameMonth, prevBalance, end, ssRaw, start, firstPay, active, n, fullYear, laborMonths, amt, year, emp, hasSS, hasKoyo, ss, koyo, kokuho, nenkin, ssY, koyoY, nationalY, kokuhoY, finalTax, w, withheldY, gap, adjust, yotei, balance, payTo, laborY, companySs, tokuY,
-    net: year - finalTax - ssY - koyoY - nationalY - tokuY };
+  return { juminPrev, juminNext, juminM, juminPay, juminRest, juminY, jigyoPrev, jigyoNext, tokuPays, sameMonth, prevBalance, end, ssRaw, start, firstPay, active, n, fullYear, laborMonths, amt, year, emp, hasSS, hasKoyo, ss, koyo, kokuho, nenkin, ssY, koyoY, nationalY, kokuhoY, finalTax, w, withheldY, gap, adjust, yotei, balance, payTo, laborY, companySs, tokuY,
+    net: year - finalTax - juminY - jigyoPrev - ssY - koyoY - nationalY - tokuY };
 }
 /*calc-end*/
 
 const $ = id => document.getElementById(id);
 const yen = n => Math.round(n).toLocaleString('ja-JP') + '円';
 const pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '0%';
-const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, cur: 0, exp: 20, src: 1, vat: 0, tk: 0, fil: 0, labTab: 'both' };
+const state = { corp: 'llc', recv: 'permanent', kind: 'employee', startMode: 0, startSel: 4, startM: 0, endMode: 0, endSel: 9, endM: 0, amt: 300000, age: 0, hours: 30, big: 0, toku: 1, jt: 1, cur: 0, exp: 20, src: 1, vat: 0, tk: 0, fil: 0, labTab: 'both' };
 const LAB_TABS = {
   employee: [['both', '雇用保険 + 労災保険'], ['rosai', '労災保険のみ']],
   officer: [['officerNone', '加入なし'], ['tokubetsu1', '労災保険に特別加入']],
@@ -403,6 +433,7 @@ const matchTax = s => s.kind !== 'contractor' ? (!adjustable(s) || paidYear(s) >
 // 納期の特例は常時 10 人未満の会社だけ。対象は給与と士業の報酬で、それ以外の報酬は毎月納める
 const small = s => !(s.kind === 'employee' && s.big);
 const tokuOn = s => (s.kind === 'contractor' ? s.src === 2 : small(s)) && !!s.toku;
+const juminSemi = s => small(s) && !!s.jt;
 const matchLab = s => s.kind === 'employee' ? (s.hours >= 20 ? 'both' : 'rosai') : s.kind === 'officer' ? (s.tk ? 'tokubetsu1' : 'officerNone') : (s.tk ? 'tokubetsu' : 'none');
 
 // ok: true 満たす / false 満たさない / null 入力欄にない条件
@@ -507,7 +538,7 @@ function render() {
     el.classList.toggle('off', off);
     el.querySelectorAll('input, select').forEach(i => { i.disabled = off; });
   });
-  if (!small(s)) $('t-1').disabled = true;
+  if (!small(s)) $('t-1').disabled = $('j-1').disabled = true;
   const lastPayNext = !c.sameMonth && (c.start === 12 || c.end === 12); // 最後または最初の支払いが翌年 1 月
   const payer = '支払側', pay = s.kind === 'officer' ? '役員報酬' : emp ? '給与' : '報酬', me = '受取側';
 
@@ -517,12 +548,17 @@ function render() {
   $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
 
   // 所得税
-  const tax = {}, toku = tokuOn(s), files = emp || c.w > 0, payLabel = emp ? `${pay} (明細を交付)` : pay;
+  const tax = {}, toku = tokuOn(s), files = emp || c.w > 0;
+  const payLabel = m => {
+    if (!emp) return pay;
+    const j = c.juminPay(m);
+    return `${pay} (${j > c.juminM ? '残りの住民税を一括で天引き、' : j ? '住民税を天引き、' : ''}明細を交付)`;
+  };
   // 徴収高計算書は税額が 0 円でも出す。納付の矢印の直前に並べる
   const filing = (map, m) => add(map, m, m === 1 && toku ? 19 : 9, ev(m === 1 && toku ? '20日' : '10日', 'co', 'gov', '徴収高計算書を提出', 0, 1, { paper: true }));
   MONTHS.forEach(m => {
     if (files && (toku ? (m === 7 ? MONTHS.some(x => x <= 6 && c.active(x)) : m === 1 && !c.start) : (m === 1 ? !c.start : c.active(m - 1)))) filing(tax, m);
-    if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', payLabel, c.amt - c.w, c.amt));
+    if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', payLabel(m), c.amt - c.w - c.juminPay(m), c.amt));
     if (c.payTo[m]) {
       const date = toku ? (m === 1 ? '20日' : '10日') : '10日';
       add(tax, m, m === 1 && toku ? 20 : 10, ev(date, 'co', 'gov', toku ? (m === 1 ? '前年7〜12月分の源泉所得税を納付' : '1〜6月分の源泉所得税を納付') : '前月分の源泉所得税を納付', c.payTo[m], c.amt));
@@ -585,7 +621,7 @@ function render() {
   if (!emp && c.w && !c.start && c.fullYear > 50000) payReport(tax);
   if (!emp && c.w && c.year > 50000) payReport(taxNext);
   if (emp && c.end) place(tax, taxNext, c.end + 1, 26, ev('1か月以内', 'co', 'me', '給与所得の源泉徴収票', 0, 1, { paper: true }));
-  if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', payLabel, c.amt - c.w, c.amt));
+  if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', payLabel(13), c.amt - c.w - c.juminPay(13), c.amt));
   if (files && (toku ? MONTHS.some(m => m >= 7 && c.active(m)) : c.end && c.active(12))) filing(taxNext, 1);
   if (files && c.end === 12 && !c.sameMonth) filing(taxNext, toku ? 7 : 2);
   if (files && toku && !c.end) filing(taxNext, 7);
@@ -621,7 +657,63 @@ function render() {
       }
     }
   }
-  $('seqTax').innerHTML = seq([payer, me, '税務署'], tax, taxNext, !c.end);
+  // 住民税。雇用と役員は給与から引いて会社が納め (特別徴収)、業務委託と退職後は本人が年 4 回納める (普通徴収、23 区の例)
+  const selfPay = (map, nextMap, annual) => {
+    const v = Math.floor(annual / 4);
+    add(map, 6, 1, ev('6月', 'gov', 'me', '住民税の納税通知書', 0, 1, { paper: true }));
+    [6, 8, 10].forEach((m, i) => add(map, m, 33, ev('月末', 'me', 'gov', `住民税 ${i + 1}期`, v, c.amt)));
+    if (nextMap) add(nextMap, 1, 35, ev('月末', 'me', 'gov', '住民税 4期', v, c.amt));
+  };
+  if (!emp) {
+    if (c.juminPrev) {
+      add(tax, 1, 35, ev('月末', 'me', 'gov', '住民税 4期', Math.floor(c.juminPrev / 4), c.amt));
+      selfPay(tax, taxNext, c.juminPrev);
+    }
+    if (c.juminNext) selfPay(taxNext, null, c.juminNext);
+    const jigyo = (map, annual) => {
+      if (!annual) return;
+      add(map, 8, 2, ev('8月', 'gov', 'me', '個人事業税の納税通知書 (都道府県)', 0, 1, { paper: true }));
+      add(map, 8, 34, ev('月末', 'me', 'gov', '個人事業税 1期', Math.floor(annual / 2), c.amt));
+      add(map, 11, 34, ev('月末', 'me', 'gov', '個人事業税 2期', Math.floor(annual / 2), c.amt));
+    };
+    jigyo(tax, c.jigyoPrev);
+    jigyo(taxNext, c.jigyoNext);
+  } else {
+    const notice = map => {
+      add(map, 5, 31, ev('31日まで', 'gov', 'co', '住民税の特別徴収税額決定通知書', 0, 1, { paper: true }));
+      add(map, 5, 32, ev('5月末', 'co', 'me', '決定通知書を本人へ', 0, 1, { paper: true }));
+    };
+    if (c.juminPrev && (!c.end || c.end >= 5)) notice(tax);
+    if (!c.end && c.juminNext) {
+      notice(taxNext);
+      add(taxNext, 6, 24, ev('6月', 'me', 'me', '給与から住民税を天引き (翌年5月まで)', 0, 1, { mark: true }));
+    }
+    const nounyu = (map, m, label, v) => { if (v) add(map, m, 12, ev('10日', 'co', 'gov', label, v, c.amt)); };
+    if (juminSemi(s)) {
+      const sum = ms => ms.reduce((a, m) => a + c.juminPay(m), 0);
+      nounyu(tax, 6, '前年12月〜5月分の住民税を納入', c.juminM + sum([1, 2, 3, 4, 5]));
+      nounyu(tax, 12, '6〜11月分の住民税を納入', sum([6, 7, 8, 9, 10, 11]));
+      nounyu(taxNext, 6, '前年12月〜5月分の住民税を納入', c.juminPay(12) + (c.end ? c.juminPay(13) : c.juminM * 5));
+      if (!c.end) nounyu(taxNext, 12, '6〜11月分の住民税を納入', Math.floor(c.juminNext / 12) * 6);
+    } else {
+      // 前月の給与から引いた分を翌月 10 日に納める
+      MONTHS.forEach(m => nounyu(tax, m, '前月分の住民税を納入', m === 1 ? c.juminM : c.juminPay(m - 1)));
+      if (c.end) {
+        nounyu(taxNext, 1, '前月分の住民税を納入', c.juminPay(12));
+        nounyu(taxNext, 2, '前月分の住民税を納入', c.juminPay(13));
+      }
+    }
+    if (c.end && c.juminPrev) {
+      place(tax, taxNext, c.end + 1, 13, ev('10日', 'co', 'gov', '住民税の異動届', 0, 1, { paper: true }));
+      if (c.end <= 5) selfPay(tax, taxNext, c.juminPrev);
+      else if (c.juminRest) {
+        place(tax, taxNext, c.end + 2, 1, ev('その後', 'gov', 'me', '残りの住民税の納税通知書', 0, 1, { paper: true }));
+        place(tax, taxNext, c.end + 2, 33, ev('その後', 'me', 'gov', '残りの住民税を納付', c.juminRest, c.amt));
+      }
+    }
+    if (c.end && c.juminNext) selfPay(taxNext, null, c.juminNext);
+  }
+  $('seqTax').innerHTML = seq([payer, me, '税務署・市区町村'], tax, taxNext, !c.end);
   $('taxNote').textContent = emp
     ? c.w
       ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
@@ -639,6 +731,13 @@ function render() {
   if (!c.end) $('taxNote').textContent += tab === 'adjust'
     ? (s.fil ? ' 年末調整で精算したうえで、翌年3月に確定申告もします。医療費控除の還付や給与以外の所得の税額は図の金額に入れていません。' : ' 年末調整で精算するので確定申告はしません。')
     : ' 翌年以降も毎年3月に前年分を確定申告します。';
+  $('taxNote').textContent += c.juminPrev
+    ? emp
+      ? ` 住民税は前年の所得にかかり、年 ${yen(c.juminPrev)} (目安) を6月から翌年5月の給与で引いて会社が納めます。`
+      : ` 住民税は年 ${yen(c.juminPrev)} (目安) を年4回、自分で納めます。${c.jigyoPrev ? `個人事業税は年 ${yen(c.jigyoPrev)} (目安) を年2回納めます。` : ''}`
+    : c.juminNext
+      ? ` 住民税は今年の所得にかかるので、翌年6月から${emp ? '' : '自分で'}納めます (年 ${yen(c.juminNext)}、目安)。`
+      : ' 住民税はかかりません (目安)。';
 
   // 労働保険
   if (s.labTab === 'none' || s.labTab === 'officerNone') {
@@ -774,10 +873,11 @@ function render() {
   const parts = [
     [emp ? '手元に残る額' : '手元に残る額 (経費込み)', c.net, 'var(--pay)'],
     ['所得税', c.finalTax, 'var(--gov)'],
+    [emp ? '住民税' : '住民税・個人事業税', c.juminY + c.jigyoPrev, 'var(--local)'],
     ['社会保険', c.ssY + c.nationalY, 'var(--ins)'],
     ['労働保険', c.koyoY + c.tokuY, 'var(--labor)'],
   ];
-  $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? p[1] / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
+  $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? Math.max(0, p[1]) / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
   $('legend').innerHTML = parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')
     + (emp ? `<li>会社が別に負担 <span class="num">${yen(Math.max(0, c.companySs + c.laborY - c.koyoY))}</span></li>` : '');
 }
@@ -788,7 +888,7 @@ function syncSeg() {
   $('k-l').disabled = state.corp !== 'llc';
   $('k-k').disabled = state.corp !== 'kk';
   document.querySelectorAll('.seg').forEach(g => {
-    const v = String(g.dataset.k === 'toku' && !small(state) ? 0 : state[g.dataset.k]);
+    const v = String(['toku', 'jt'].includes(g.dataset.k) && !small(state) ? 0 : state[g.dataset.k]);
     g.querySelectorAll('input').forEach(i => { i.checked = i.value === v; });
   });
 }
@@ -850,6 +950,7 @@ const QUERY = [
   ['hours', 'hours', v => [0, 20, 30].includes(intIn(v, 0, 30)) ? Number(v) : null],
   ['big', 'big', v => intIn(v, 0, 1)],
   ['toku', 'toku', v => intIn(v, 0, 1)],
+  ['jt', 'jt', v => intIn(v, 0, 1)],
   ['cur', 'cur', v => intIn(v, 0, 1)],
   ['exp', 'exp', v => intIn(v, 0, 90)],
   ['src', 'src', v => intIn(v, 0, 2)],
