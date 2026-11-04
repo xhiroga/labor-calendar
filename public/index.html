@@ -615,7 +615,7 @@ function render() {
   }
   MONTHS.filter(c.active).forEach(m => {
     add(soc, m, 25, ev('25日', 'co', 'me', c.hasSS ? `${pay} (前月分を天引き)` : pay, c.amt - c.ss(m).me, c.amt));
-    if (c.hasSS) add(soc, m, 30, ev('月末', 'co', 'gov', '労使の前月分を納付', c.ss(m).all, c.amt));
+    if (c.hasSS) add(soc, m, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', c.ss(m).all, c.amt));
     else {
       add(soc, m, 30, ev('月末', 'me', 'gov', '国民年金', c.nenkin(m), c.amt));
       if (c.kokuho(m)) add(soc, m, 31, ev('月末', 'me', 'gov', '国民健康保険 (目安)', c.kokuho(m), c.amt));
@@ -624,7 +624,7 @@ function render() {
   if (lastPayNext) {
     const r = c.ssRaw(12);
     add(socNext, 1, 25, ev('25日', 'co', 'me', c.hasSS ? `${pay} (前月分を天引き)` : pay, c.amt - r.me, c.amt));
-    if (c.hasSS) add(socNext, 1, 30, ev('月末', 'co', 'gov', '労使の前月分を納付', r.all, c.amt));
+    if (c.hasSS) add(socNext, 1, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', r.all, c.amt));
     else add(socNext, 1, 30, ev('月末', 'me', 'gov', '国民年金', 17920, c.amt));
   }
   const socAfter = {};
