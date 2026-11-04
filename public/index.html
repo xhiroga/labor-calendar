@@ -123,7 +123,7 @@ a { color: inherit }
       <label><input type="radio" name="big" id="b-0" value="0"><span>50人以下</span></label>
       <label><input type="radio" name="big" id="b-1" value="1"><span>51人以上</span></label>
     </div></fieldset>
-    <fieldset class="field" data-only="employee officer"><legend>源泉所得税の納期特例<span class="info" tabindex="0" role="img" aria-label="給与を受け取る人が常時10人未満で、税務署に申請して承認された会社が使えます。却下の通知がなければ、申請した月の翌月末に承認されたものとみなされ、申請した月の翌月に源泉徴収する分から対象になります。対象は給与・退職金と、税理士・弁護士・司法書士などの一定の報酬で、それ以外は毎月納付します。納付は1〜6月分が7月10日、7〜12月分が翌年1月20日です。常時10人以上になったら届出が要ります。">i<span class="tip" aria-hidden="true">給与を受け取る人が常時10人未満で、税務署に申請して承認された会社が使えます。却下の通知がなければ、申請した月の翌月末に承認されたものとみなされ、申請した月の翌月に源泉徴収する分から対象になります。対象は給与・退職金と、税理士・弁護士・司法書士などの一定の報酬で、それ以外は毎月納付します。納付は1〜6月分が7月10日、7〜12月分が翌年1月20日です。常時10人以上になったら届出が要ります。</span></span></legend><div class="seg" data-k="toku">
+    <fieldset class="field" data-only="employee officer contractor"><legend>源泉所得税の納期特例<span class="info" tabindex="0" role="img" aria-label="給与を受け取る人が常時10人未満で、税務署に申請して承認された会社が使えます。却下の通知がなければ、申請した月の翌月末に承認されたものとみなされ、申請した月の翌月に源泉徴収する分から対象になります。対象は給与・退職金と、税理士・弁護士・司法書士などの一定の報酬で、それ以外は毎月納付します。納付は1〜6月分が7月10日、7〜12月分が翌年1月20日です。常時10人以上になったら届出が要ります。">i<span class="tip" aria-hidden="true">給与を受け取る人が常時10人未満で、税務署に申請して承認された会社が使えます。却下の通知がなければ、申請した月の翌月末に承認されたものとみなされ、申請した月の翌月に源泉徴収する分から対象になります。対象は給与・退職金と、税理士・弁護士・司法書士などの一定の報酬で、それ以外は毎月納付します。納付は1〜6月分が7月10日、7〜12月分が翌年1月20日です。常時10人以上になったら届出が要ります。</span></span></legend><div class="seg" data-k="toku">
       <label><input type="radio" name="toku" id="t-1" value="1"><span>承認済み (年2回納付)</span></label>
       <label><input type="radio" name="toku" id="t-0" value="0"><span>未承認 (毎月納付)</span></label>
     </div></fieldset>
@@ -167,6 +167,7 @@ a { color: inherit }
     <div class="field" data-only="contractor"><label for="exp">経費 (売上に対する %)</label><input type="number" id="exp" min="0" max="90" step="5"></div>
     <fieldset class="field" data-only="contractor"><legend>報酬の種類</legend><div class="seg" data-k="src">
       <label><input type="radio" name="src" id="s-1" value="1"><span>源泉徴収の対象 (デザイン料・原稿料など)</span></label>
+      <label><input type="radio" name="src" id="s-2" value="2"><span>士業 (弁護士・税理士など)</span></label>
       <label><input type="radio" name="src" id="s-0" value="0"><span>対象外</span></label>
     </div></fieldset>
     <fieldset class="field" data-only="employee officer"><legend>年末調整のあとの確定申告</legend><div class="seg" data-k="fil">
@@ -223,13 +224,13 @@ a { color: inherit }
       <li>健康保険は3月分まで9.91%、4月分から9.85%。介護保険は3月分まで1.59%、4月分から1.62%。子ども・子育て支援金0.23%は4月分から。いずれも翌月の給与で引きます。厚生年金の上限は標準報酬65万円として計算します。</li>
       <li>雇用保険は令和8年度の一般の事業で、本人0.5%、会社0.85%。労災保険は「その他の各種事業」の0.3%を例にしています。年度更新の額は前年度の精算を省いています。</li>
       <li>国民健康保険は自治体ごとに違うので、(所得 − 43万円) × 12% + 6万円 (40〜64歳は少し上乗せ) のおおまかな目安で、軽減を入れていません。</li>
-      <li>労働保険は雇用される人の制度です。業務委託のアニメーション制作作業従事者は、労災保険の第二種特別加入の対象で、保険料率は1000分の3です。図の特別加入は給付基礎日額1万円を例に、年10,950円を4月に納める形で描いています。納める時期と団体の会費は加入する団体によって違います。短時間の社会保険は月8.8万円以上、学生以外の想定です。有期雇用は、社会保険と雇用保険の対象になる長さの契約を想定しています (社会保険は2か月を超える見込み、雇用保険は31日以上の見込み)。この想定の中では、無期雇用と有期雇用の金額は同じです。</li>
+      <li>労働保険は雇用される人の制度です。業務委託のアニメーション制作作業従事者は、労災保険の第二種特別加入の対象で、保険料率は1000分の3です。図の特別加入は給付基礎日額1万円を例に、年10,950円を4月に納める形で描いています。年度の途中の加入と脱退は月数で割っています。納める時期と団体の会費は加入する団体によって違います。短時間の社会保険は学生以外の想定です (月8.8万円の賃金要件は2026年10月に撤廃)。有期雇用は、社会保険と雇用保険の対象になる長さの契約を想定しています (社会保険は2か月を超える見込み、雇用保険は31日以上の見込み)。この想定の中では、無期雇用と有期雇用の金額は同じです。</li>
       <li>確定申告が必要かどうかは、所得や控除で変わります。図の条件は主なものだけです。</li>
       <li>今年の入社・開始は1日付けで、最初の支払いは翌月25日 (当月払いなら当月25日)、今年の収入はこの支払いだけの想定です。前職の収入、入社前の国民年金や国民健康保険、前年の所得による国民健康保険の違いは入れていません。翌年の納付や申告は、図の下に「翌年」として出します。金額は今年の料率で計算しています。年度更新の額は、賃金の締め日の違いを省いて、入社後の月数で計算しています。12月開始の最初の支払いの月の国民健康保険は入れていません。</li>
-      <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険、次の仕事の収入は入れていません。年の途中で退職すると年末調整がないので、確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
+      <li>今年の退職・終了は月末付けの想定です。翌月払いなら、その月の分の給与と保険料は翌月に払います。当月払いなら、最後の給与で前月分と当月分の保険料を引きます。健康保険と厚生年金の資格は退職日の翌日に失うので、退職月の分まで保険料がかかります。退職後に入る国民年金や国民健康保険、次の仕事の収入は入れていません。12月の給与を受けてからの退職と、年136万円以下の短時間の人の退職は年末調整で精算し、それ以外の途中退職は確定申告で精算する形で描いています。年度更新は働いた月数で計算しています。</li>
       <li>健康保険と厚生年金の資格は入社日に発生します。図の破線は、その確認の通知が受取側へ届く流れです。資格情報のお知らせは協会けんぽの場合の名称で、資格確認書はマイナ保険証を持たない人などに交付されます。</li>
       <li>翌年は、毎月のものを省いて、年に1回などの作業だけを出しています。金額が変わるものは金額を入れず、破線で示します。翌々年以降も同じ作業が毎年続く想定です。賃金が変わったときの月額変更届などは入れていません。納付書や納入通知書の時期は目安で、国民健康保険は自治体によって違います。</li>
-      <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。事務組合の委託費は別です。</li>
+      <li>役員は、肩書きではなく権限と働き方の実態で判定します。株式会社と合同会社で考え方は同じです。従業員を兼ねる役員に労働者の実態があるときは、雇用として見てください。無報酬なら社会保険の対象外とし、非常勤などは実態で変わります。役員の特別加入は給付基礎日額1万円、労災保険率0.3%を例に、会社が年度更新で納める形で描いています。年度の途中の加入と脱退は月数で割っています。事務組合の委託費は別です。</li>
     </ul>
     <p>労働保険の見出しのロゴは厚生労働省ホームページへ、社会保険の見出しの<a href="https://www.nenkin.go.jp/info/kihonjoho/mark.html">シンボルマーク (日本年金機構)</a>は日本年金機構ホームページへのリンクです。所得税の見出しのマークは、所得税の所轄を示すために<a href="https://www.nta.go.jp/chuijiko/tax_symbol.htm">税に関するシンボルマーク (国税庁)</a>を引用しています。画像は<a href="https://commons.wikimedia.org/wiki/File:%E5%9B%BD%E7%A8%8E%E5%BA%81.svg">Wikimedia Commons の File:国税庁.svg</a> (パブリックドメインと表記) です。このページは厚生労働省、国税庁、日本年金機構が作成したものではなく、これらの機関の公認を受けたものでも、見解を示すものでもありません。</p>
     <p>出典:
@@ -237,6 +238,9 @@ a { color: inherit }
       <a href="https://www.kyoukaikenpo.or.jp/g7/cat330/sb3130/r08/">協会けんぽ 令和8年度の保険料率</a> /
       <a href="https://www.nenkin.go.jp/service/kokunen/hokenryo/hokenryo.html">国民年金保険料 (日本年金機構)</a> /
       <a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf">源泉徴収のあらまし (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2505.htm">納期の特例 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2665.htm">年末調整の対象 (国税庁)</a> /
+      <a href="https://www.nta.go.jp/publication/pamph/hotei/minashi.pdf">源泉徴収票のみなし提出 (国税庁)</a> /
       <a href="https://jsite.mhlw.go.jp/ishikawa-roudoukyoku/content/contents/tokubetukanyuu_2syu_3syu_hokenritukaitehyou_r6.4.1.pdf">第二種特別加入保険料率表 (石川労働局)</a> /
       <a href="https://www.mhlw.go.jp/hourei/doc/tsuchi/T260319S0080.pdf">法人の役員の被保険者資格 (厚生労働省)</a> /
       <a href="https://jsite.mhlw.go.jp/fukuoka-roudoukyoku/content/contents/002225902.pdf">兼務役員雇用実態証明書 (福岡労働局)</a> /
@@ -244,6 +248,7 @@ a { color: inherit }
       <a href="https://www.nenkin.go.jp/service/kounen/tekiyo/hihokensha1/20150422.html">資格取得の手続き (日本年金機構)</a> /
       <a href="https://www.nenkin.go.jp/service/kounen/tekiyo/hihokensha2/20201204.html">標準報酬等の決定の通知 (日本年金機構)</a> /
       <a href="https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20121017.html">定時決定 (日本年金機構)</a> /
+      <a href="https://www.nenkin.go.jp/oshirase/taisetu/jigyosho/2026/202610/100104.html">賃金要件の撤廃 (日本年金機構)</a> /
       <a href="https://www.kyoukaikenpo.or.jp/faq/mynumber_insurance_card/001/index.html">マイナ保険証・資格確認書 (協会けんぽ)</a> /
       <a href="https://jsite.mhlw.go.jp/hyogo-roudoukyoku/roudoukyoku/_105009/juugyouinnnootetuduki.html">雇用保険の手続き (兵庫労働局)</a>
     </p>
@@ -275,7 +280,7 @@ function calc(s) {
   const start = s.startM || 0, end = s.endM || 0, firstPay = start ? start + lag : 1, active = m => m >= firstPay && (!end || m <= end + lag);
   const n = MONTHS.filter(active).length;
   const amt = s.amt, fullYear = amt * 12, year = amt * n, emp = s.kind !== 'contractor', officer = s.kind === 'officer';
-  const hasSS = officer ? amt > 0 : emp && (s.hours === 30 || (s.hours === 20 && s.big && amt >= 88000));
+  const hasSS = officer ? amt > 0 : emp && (s.hours === 30 || (s.hours === 20 && s.big));
   const hasKoyo = s.kind === 'employee' && s.hours >= 20;
   // 給与から引く額。m は支払月 (保険料は前月分)
   const ssRaw = m => {
@@ -308,7 +313,14 @@ function calc(s) {
   const nenkin = m => (hasSS || !active(m)) ? 0 : (m <= 4 ? 17510 : 17920);
   const nationalY = hasSS ? 0 : MONTHS.reduce((a, m) => a + kokuho(m) + nenkin(m), 0);
 
-  const tokuY = !emp && s.tk ? 10950 : 0; // 業務委託の特別加入。給付基礎日額 1 万円 × 365 × 3/1000
+  // 業務委託の特別加入。給付基礎日額 1 万円 × 365 × 3/1000。年度の途中の加入と脱退は月数で割る
+  const tokuFull = !emp && s.tk ? 10950 : 0, tokuOf = months => Math.round(tokuFull * months / 12), tokuPays = {};
+  if (tokuFull) {
+    const fyMonths = end ? Math.max(0, end - 3) : 12;
+    if ((!start || start <= 4) && fyMonths) tokuPays[4] = tokuOf(fyMonths);
+    if (start && start !== 4) tokuPays[start] = tokuOf(start < 4 ? Math.min(end || 3, 3) - start + 1 : (end || 15) - start + 1);
+  }
+  const tokuY = Object.values(tokuPays).reduce((a, v) => a + v, 0);
   const socialDed = ssY + koyoY + nationalY + tokuY;
   const finalTax = incomeTax(revenueIncome - basicDeduction(revenueIncome) - socialDed);
   let w;
@@ -320,34 +332,36 @@ function calc(s) {
   else w = Math.floor(amt <= 1000000 ? amt * .1021 : 102100 + (amt - 1000000) * .2042);
   const withheldY = w * n;
   const gap = finalTax - withheldY; // 正なら追加納税、負なら還付
-  const adjust = tab === 'adjust' && !end ? Math.max(0, -gap) : 0;
+  const adjust = tab === 'adjust' ? Math.max(0, -gap) : 0;
   // 3 月に申告する前年分は 1 年いた前提。今年の途中で辞めても前年分と予定納税は変わらない
   const nenkinFull = hasSS ? 0 : MONTHS.reduce((a, m) => a + (m <= 4 ? 17510 : 17920), 0);
-  const prevSocial = ssFullY + koyoFullY + tokuY + (hasSS ? 0 : Math.round(kokuhoY / 10) * 10 + nenkinFull);
+  const prevSocial = ssFullY + koyoFullY + tokuFull + (hasSS ? 0 : Math.round(kokuhoY / 10) * 10 + nenkinFull);
   const prevIncome = incomeOf(fullYear);
   const prevGap = incomeTax(prevIncome - basicDeduction(prevIncome) - prevSocial) - w * 12;
+  // 雇用と役員の前年分は年末調整で済んでいる前提。今年の途中で辞めても前年の還付は変わらない
+  const prevAdjust = emp && !start && fullYear <= 20000000 ? Math.max(0, -prevGap) : 0;
   const yotei = (!start && !emp && prevGap >= 150000) ? Math.floor(prevGap / 3 / 100) * 100 : 0;
   const prevBalance = tab === 'adjust' ? 0 : prevGap - yotei * 2;
   const balance = tab === 'adjust' ? 0 : gap - yotei * 2;
 
   // 会社から税務署への納付額。年末調整の還付は納付から差し引き、足りない分は翌月以降へ繰り越す
   const payTo = {};
-  if (emp && s.toku) {
+  if (tokuOn(s)) {
     const h1 = MONTHS.filter(m => m <= 6 && active(m)).length;
     if (w * h1) payTo[7] = w * h1;
-    if (!start) payTo[1] = Math.max(0, w * 6 - adjust);
+    if (!start) payTo[1] = Math.max(0, w * 6 - prevAdjust);
   } else if (w > 0) {
     // 今年の開始なら前年分の納付は無く、12 月の支払い分と年末調整の精算は翌年 1 月に回る
-    let carry = start ? 0 : adjust;
+    let carry = prevAdjust;
     MONTHS.filter(m => m === 1 ? !start : active(m - 1)).forEach(m => { const v = Math.max(0, w - carry); carry = Math.max(0, carry - w); payTo[m] = v; });
   }
   // 7 月 10 日の年度更新に載る月数。今年度の概算 + 前年度の確定。7 月以降の開始は翌年度の精算に回る
   const lastFy = end ? (end < 4 ? 3 : end) : 15; // 4 月始まりで数えた今年度の最後の月 (15 は翌年 3 月)
   const laborMonths = !start ? (end ? Math.max(0, end - 3) : 12)
     : start <= 6 ? Math.max(0, lastFy - Math.max(4, start) + 1) + (start < 4 ? Math.min(end || 3, 3) - start + 1 : 0) : 0;
-  const laborY = officer ? (s.tk && laborMonths ? 10950 : 0) : emp ? Math.round(amt * laborMonths * ((hasKoyo ? 1.35 : 0) + .3) / 100) : 0;
+  const laborY = officer ? (s.tk ? Math.round(10950 * laborMonths / 12) : 0) : emp ? Math.round(amt * laborMonths * ((hasKoyo ? 1.35 : 0) + .3) / 100) : 0;
   const companySs = MONTHS.reduce((a, m) => a + ss(m).all - ss(m).me, 0);
-  return { sameMonth, prevBalance, end, ssRaw, start, firstPay, active, n, fullYear, laborMonths, amt, year, emp, hasSS, hasKoyo, ss, koyo, kokuho, nenkin, ssY, koyoY, nationalY, kokuhoY, finalTax, w, withheldY, gap, adjust, yotei, balance, payTo, laborY, companySs, tokuY,
+  return { tokuPays, sameMonth, prevBalance, end, ssRaw, start, firstPay, active, n, fullYear, laborMonths, amt, year, emp, hasSS, hasKoyo, ss, koyo, kokuho, nenkin, ssY, koyoY, nationalY, kokuhoY, finalTax, w, withheldY, gap, adjust, yotei, balance, payTo, laborY, companySs, tokuY,
     net: year - finalTax - ssY - koyoY - nationalY - tokuY };
 }
 /*calc-end*/
@@ -362,7 +376,12 @@ const LAB_TABS = {
   contractor: [['none', '加入なし'], ['tokubetsu', '労災保険に特別加入']],
 };
 const paidYear = s => { const lag = s.kind !== 'contractor' && s.cur ? 0 : 1; return s.amt * Math.max(0, Math.min(12, s.endM ? s.endM + lag : 12) - (s.startM ? s.startM + lag : 1) + 1); };
-const matchTax = s => s.kind !== 'contractor' ? (s.endM || paidYear(s) > 20000000 ? 'filing' : 'adjust') : (s.src ? 'srcYes' : 'srcNone');
+// 年末調整の対象: 年末まで在職、12 月の給与を受けてからの退職、年 136 万円以下の短時間の人の退職 (同じ年に次の勤め先がない想定)
+const adjustable = s => !s.endM || s.endM === 12 || (s.kind === 'employee' && s.hours < 30 && paidYear(s) <= 1360000);
+const matchTax = s => s.kind !== 'contractor' ? (!adjustable(s) || paidYear(s) > 20000000 ? 'filing' : 'adjust') : (s.src ? 'srcYes' : 'srcNone');
+// 納期の特例は常時 10 人未満の会社だけ。対象は給与と士業の報酬で、それ以外の報酬は毎月納める
+const small = s => !(s.kind === 'employee' && s.big);
+const tokuOn = s => (s.kind === 'contractor' ? s.src === 2 : small(s)) && !!s.toku;
 const matchLab = s => s.kind === 'employee' ? (s.hours >= 20 ? 'both' : 'rosai') : s.kind === 'officer' ? (s.tk ? 'tokubetsu1' : 'officerNone') : (s.tk ? 'tokubetsu' : 'none');
 
 // ok: true 満たす / false 満たさない / null 入力欄にない条件
@@ -377,11 +396,11 @@ function rules(s, k) {
   const isCon = { t: '業務委託で報酬をもらっている', ok: !emp, now: work };
   const R = {
     adjust: { mode: 'all', items: [isPaid, { t: '年間の給与が2,000万円以下', ok: year <= 20000000, now: yen(year) },
-      { t: '扶養控除等申告書を会社に出している', ok: null }, { t: '年末まで在職している', ok: !s.endM, now: s.endM ? `${s.endM}月末に退職` : '退職なし' }] },
+      { t: '扶養控除等申告書を会社に出している', ok: null }, { t: '年末まで在職している (12月の給与を受けてからの退職と、年136万円以下の短時間の人の退職も対象)', ok: adjustable(s), now: s.endM ? `${s.endM}月末に退職` : '退職なし' }] },
     filing: { mode: 'any', items: [{ t: '年間の給与が2,000万円を超える', ok: emp && year > 20000000, now: yen(year) },
-      { t: '給与以外の所得が20万円を超える', ok: null }, { t: '年末調整を受けずに退職した', ok: emp && !!s.endM, now: s.endM ? `${s.endM}月末に退職` : '退職なし' },
+      { t: '給与以外の所得が20万円を超える', ok: null }, { t: '年末調整を受けずに退職した', ok: emp && !adjustable(s), now: s.endM ? `${s.endM}月末に退職` : '退職なし' },
       { t: '医療費控除など、年末調整で扱えない控除を使う', ok: null }] },
-    srcYes: { mode: 'all', items: [isCon, { t: '報酬が源泉徴収の対象 (デザイン料・原稿料など)', ok: !!s.src, now: s.src ? '対象' : '対象外' }] },
+    srcYes: { mode: 'all', items: [isCon, { t: '報酬が源泉徴収の対象 (デザイン料・原稿料、士業の報酬など)', ok: !!s.src, now: s.src === 2 ? '士業' : s.src ? '対象' : '対象外' }] },
     srcNone: { mode: 'all', items: [isCon, { t: '報酬が源泉徴収の対象外', ok: !s.src, now: s.src ? '対象' : '対象外' }] },
     both: { mode: 'all', items: [isEmp, { t: '週の所定労働時間が20時間以上', ok: s.hours >= 20, now: hours },
       s.recv === 'permanent' ? { t: '31日以上働く見込みがある', ok: true, now: work } : { t: '31日以上働く見込みがある', ok: null },
@@ -462,10 +481,12 @@ function render() {
   const s = state, c = calc(s), emp = c.emp;
   // 働き方に関係ない項目は消さずに無効にする。消すと項目が詰まって並びが変わる
   document.querySelectorAll('[data-only]').forEach(el => {
-    const off = !el.dataset.only.split(' ').includes(s.kind);
+    // 業務委託の納期特例は士業の報酬だけが対象
+    const off = !el.dataset.only.split(' ').includes(s.kind) || (s.kind === 'contractor' && el.contains($('t-1')) && s.src !== 2);
     el.classList.toggle('off', off);
     el.querySelectorAll('input, select').forEach(i => { i.disabled = off; });
   });
+  if (!small(s)) $('t-1').disabled = true;
   const lastPayNext = !c.sameMonth && (c.start === 12 || c.end === 12); // 最後または最初の支払いが翌年 1 月
   const payer = '支払側', pay = s.kind === 'officer' ? '役員報酬' : emp ? '給与' : '報酬', me = '受取側';
 
@@ -475,15 +496,15 @@ function render() {
   $('labWhy').innerHTML = whyHtml(s.labTab, matchLab(s));
 
   // 所得税
-  const tax = {}, toku = emp && s.toku, files = emp || c.w > 0;
+  const tax = {}, toku = tokuOn(s), files = emp || c.w > 0;
   // 徴収高計算書は税額が 0 円でも出す。納付の矢印の直前に並べる
   const filing = (map, m) => add(map, m, m === 1 && toku ? 19 : 9, ev(m === 1 && toku ? '20日' : '10日', 'co', 'gov', '徴収高計算書を提出', 0, 1, { paper: true }));
   MONTHS.forEach(m => {
     if (files && (toku ? (m === 7 ? MONTHS.some(x => x <= 6 && c.active(x)) : m === 1 && !c.start) : (m === 1 ? !c.start : c.active(m - 1)))) filing(tax, m);
     if (c.active(m)) add(tax, m, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
     if (c.payTo[m]) {
-      const date = emp && s.toku ? (m === 1 ? '20日' : '10日') : '10日';
-      add(tax, m, m === 1 && emp && s.toku ? 20 : 10, ev(date, 'co', 'gov', emp && s.toku ? (m === 1 ? '前年7〜12月分の源泉所得税を納付' : '1〜6月分の源泉所得税を納付') : '前月分の源泉所得税を納付', c.payTo[m], c.amt));
+      const date = toku ? (m === 1 ? '20日' : '10日') : '10日';
+      add(tax, m, m === 1 && toku ? 20 : 10, ev(date, 'co', 'gov', toku ? (m === 1 ? '前年7〜12月分の源泉所得税を納付' : '1〜6月分の源泉所得税を納付') : '前月分の源泉所得税を納付', c.payTo[m], c.amt));
     }
   });
   if (emp && c.start) add(tax, c.start, 1, ev('1日', 'me', 'co', '扶養控除等申告書', 0, 1, { paper: true }));
@@ -493,12 +514,18 @@ function render() {
     add(map, 3, 16, ev('15日', 'me', 'gov', '税額があれば納付', 0, 1, { paper: true }));
     add(map, 4, 15, ev('4月頃', 'gov', 'me', '払いすぎなら還付', 0, 1, { paper: true }));
   };
-  if (tab === 'adjust') {
-    if (s.fil && !c.start) filed(tax);
-    if (c.n && !c.end) add(tax, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
-    if (c.adjust) add(tax, 12, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
-    else if (c.n) add(tax, 12, 26, ev('12月', 'co', 'me', '年末調整で過不足を精算', 0, 1, { paper: true }));
-  } else if (!c.start) {
+  const adjustDocs = { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' };
+  // 雇用と役員の前年分は年末調整で済んでいる。前年分を確定申告するのは業務委託と 2,000 万円超の人
+  const prevFiled = !c.start && (!emp || c.fullYear > 20000000);
+  if (emp && !c.start && !prevFiled && s.fil) filed(tax);
+  if (tab === 'adjust' && c.n) {
+    // 在職の人と 12 月の給与を受けてから辞める人は 12 月に、年の途中で辞める人は最後の給与で精算する
+    const yearEnd = !c.end || c.end === 12, adjustM = yearEnd ? 12 : c.end + (c.sameMonth ? 0 : 1), docsM = yearEnd ? Math.max(11, c.start) : adjustM;
+    add(tax, docsM, 15, ev(yearEnd ? `${docsM}月` : '退職時', 'me', 'co', '控除証明書など', 0, 1, adjustDocs));
+    if (c.adjust) add(tax, adjustM, 26, ev('25日', 'co', 'me', '年末調整の還付', c.adjust, c.amt));
+    else add(tax, adjustM, 26, ev(yearEnd ? '12月' : '退職時', 'co', 'me', '年末調整で過不足を精算', 0, 1, { paper: true }));
+  }
+  if (prevFiled) {
     add(tax, 3, 15, ev('15日', 'me', 'gov', '前年分の確定申告', 0, 1, { paper: true }));
     if (c.prevBalance > 0) add(tax, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.prevBalance, c.amt));
     if (c.prevBalance < 0) add(tax, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.prevBalance, c.amt));
@@ -509,13 +536,14 @@ function render() {
   }
   const taxNext = {};
   // 前年に支払いがあれば 1 月末までに出す。源泉徴収票は在職者の分で、退職者には退職のときに渡す
-  const yearEndDocs = (map, slip) => {
+  // 2027 年 1 月に出す令和 8 年分からは、給与支払報告書を出せば税務署への源泉徴収票と合計表は要らない (みなし提出)
+  const yearEndDocs = (map, slip, total) => {
     if (slip) add(map, 1, 32, ev('31日', 'co', 'me', '前年分の源泉徴収票', 0, 1, { paper: true }));
     add(map, 1, 33, ev('31日', 'co', 'gov', '前年分の給与支払報告書 (市区町村へ)', 0, 1, { paper: true }));
-    add(map, 1, 34, ev('31日', 'co', 'gov', '前年分の法定調書合計表', 0, 1, { paper: true }));
+    if (total) add(map, 1, 34, ev('31日', 'co', 'gov', '前年分の法定調書合計表', 0, 1, { paper: true, info: '2027年1月に出す令和8年分からは、給与支払報告書を出せば、税務署への源泉徴収票と合計表は要りません。' }));
   };
-  if (emp && !c.start) yearEndDocs(tax, true);
-  if (emp && c.n) yearEndDocs(taxNext, !c.end);
+  if (emp && !c.start) yearEndDocs(tax, true, true);
+  if (emp && c.n) yearEndDocs(taxNext, !c.end, false);
   if (emp && c.end) place(tax, taxNext, c.end + 1, 26, ev('1か月以内', 'co', 'me', '給与所得の源泉徴収票', 0, 1, { paper: true }));
   if (lastPayNext) add(taxNext, 1, 25, ev('25日', 'co', 'me', pay, c.amt - c.w, c.amt));
   if (files && (toku ? MONTHS.some(m => m >= 7 && c.active(m)) : c.end && c.active(12))) filing(taxNext, 1);
@@ -538,10 +566,11 @@ function render() {
     if (c.balance > 0) add(taxNext, 3, 16, ev('15日', 'me', 'gov', '残りを納付', c.balance, c.amt));
     if (c.balance < 0) add(taxNext, 4, 15, ev('4月頃', 'gov', 'me', '還付', -c.balance, c.amt));
   }
+  if (tab === 'adjust' && s.fil && c.end && c.n) filed(taxNext);
   if (!c.end) {
     if (tab === 'adjust') {
       if (s.fil) filed(taxNext);
-      add(taxNext, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, { paper: true, info: '基礎控除申告書、配偶者控除等申告書、保険料控除申告書、住宅借入金等特別控除申告書。生命保険料・地震保険料・国民年金保険料の控除証明書。今年の前職があれば源泉徴収票。該当するものだけ出します。', after: 'の提出' }));
+      add(taxNext, 11, 15, ev('11月', 'me', 'co', '控除証明書など', 0, 1, adjustDocs));
       add(taxNext, 12, 26, ev('12月', 'co', 'me', '年末調整で過不足を精算', 0, 1, { paper: true }));
     } else {
       if (!emp && c.gap >= 150000) {
@@ -563,7 +592,7 @@ function render() {
     ? ` 今年の収入は ${c.n}回分です。${c.adjust > c.w ? '還付の分は、翌年の納付から順に差し引きます。' : ''}`
     : ` 今年の収入は ${c.n}回分です。今年の3月に前年分の申告はありません。`;
   if (c.end) $('taxNote').textContent += emp
-    ? ` ${c.end}月末で退職するので、最後の給与は${c.sameMonth ? c.end : c.end === 12 ? '翌年1' : c.end + 1}月です。年末調整はなく、翌年3月の確定申告で精算します。`
+    ? ` ${c.end}月末で退職するので、最後の給与は${c.sameMonth ? c.end : c.end === 12 ? '翌年1' : c.end + 1}月です。${tab === 'adjust' ? '年末調整で精算します。' : '年末調整はなく、翌年3月の確定申告で精算します。'}`
     : ` ${c.end}月末で終了するので、最後の支払いは${c.end === 12 ? '翌年1' : c.end + 1}月です。`;
 
   if (!c.end) $('taxNote').textContent += tab === 'adjust'
@@ -577,16 +606,18 @@ function render() {
   } else if (s.labTab === 'tokubetsu1') {
     const lab = {};
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '役員報酬', c.amt, c.amt)));
-    if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', 10950, c.fullYear));
+    if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', Math.round(10950 * c.laborMonths / 12), c.fullYear));
     const labNext = {};
     if (lastPayNext) add(labNext, 1, 25, ev('25日', 'co', 'me', '役員報酬', c.amt, c.amt));
-    if (!c.end) add(labNext, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', 10950, c.fullYear));
+    // 7 月以降の開始は、今年度の分が翌年の年度更新に初めて載る
+    const carried = c.start >= 7 ? (c.end || 15) - c.start + 1 : 0, future = c.end ? 0 : 12;
+    if (carried + future) add(labNext, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', Math.round(10950 * (carried + future) / 12), c.fullYear));
     $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext, !c.end);
     $('labNote').textContent = '給付基礎日額1万円の例で年 10,950円。雇用保険はありません。従業員の分の労働保険は別に納めます。';
   } else if (s.labTab === 'tokubetsu') {
     const lab = {};
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt)));
-    if ((!c.start || c.start <= 4) && (!c.end || c.end >= 4)) add(lab, 4, 10, ev('4月頃', 'me', 'gov', '特別加入の保険料 (団体経由)', 10950, c.fullYear));
+    Object.entries(c.tokuPays).forEach(([m, v]) => add(lab, Number(m), 10, ev(m === '4' ? '4月頃' : '開始時', 'me', 'gov', '特別加入の保険料 (団体経由)', v, c.fullYear)));
     const labNext = {};
     if (lastPayNext) add(labNext, 1, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt));
     if (!c.end) add(labNext, 4, 10, ev('4月頃', 'me', 'gov', '特別加入の保険料 (団体経由)', 10950, c.fullYear));
@@ -596,12 +627,11 @@ function render() {
     const withKoyo = s.labTab === 'both';
     const koyo = m => withKoyo && c.active(m) ? Math.round(c.amt * (m <= 4 ? .55 : .5) / 100) : 0;
     const koyoY = MONTHS.reduce((a, m) => a + koyo(m), 0);
-    const lab = {};
+    const lab = {}, labNext = {};
     MONTHS.filter(c.active).forEach(m => add(lab, m, 25, ev('25日', 'co', 'me', withKoyo ? '給与 (雇用保険を天引き)' : '給与', c.amt - koyo(m), c.amt)));
-    if (withKoyo && c.start && c.start < 12) add(lab, c.start + 1, 9, ev('10日', 'co', 'gov', '雇用保険被保険者資格取得届', 0, 1, { paper: true }));
+    if (withKoyo && c.start) place(lab, labNext, c.start + 1, 9, ev('10日', 'co', 'gov', '雇用保険被保険者資格取得届', 0, 1, { paper: true }));
     if (c.laborMonths) add(lab, 7, 10, ev('10日', 'co', 'gov', c.start || c.end ? `年度更新で${c.laborMonths}か月分を納付` : '年度更新で1年分を納付', Math.round(c.amt * c.laborMonths * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
     if (c.start) add(lab, c.start, 1, ev('1日', 'me', 'me', '労災保険の補償開始 (手続き不要)', 0, 1, { mark: true }));
-    const labNext = {};
     if (c.end) {
       add(lab, c.end, 99, ev('月末', 'me', 'me', '労災保険の補償終了 (手続き不要)', 0, 1, { mark: true }));
       if (withKoyo) {
@@ -611,7 +641,6 @@ function render() {
     }
     {
       if (lastPayNext) {
-        if (withKoyo && c.start === 12) add(labNext, 1, 10, ev('10日', 'co', 'gov', '雇用保険被保険者資格取得届', 0, 1, { paper: true }));
         add(labNext, 1, 25, ev('25日', 'co', 'me', withKoyo ? '給与 (雇用保険を天引き)' : '給与', c.amt - (withKoyo ? Math.round(c.amt * .5 / 100) : 0), c.amt));
       }
       // 7 月以降の開始は、今年度の確定分が翌年の年度更新に初めて載る
@@ -657,18 +686,18 @@ function render() {
     if (c.hasSS) add(socNext, 1, 30, ev('月末', 'co', 'gov', '前月分の保険料を納付（本人分 + 会社分）', r.all, c.amt));
     else add(socNext, 1, 30, ev('月末', 'me', 'gov', '国民年金', 17920, c.amt));
   }
-  const santei = map => {
+  const santei = (map, applied) => {
     add(map, 7, 10, ev('10日', 'co', 'gov', '健康保険・厚生年金保険被保険者報酬月額算定基礎届', 0, 1, { paper: true }));
-    add(map, 9, 1, ev('9月', 'me', 'me', '新しい標準報酬月額を適用 (9月分から)', 0, 1, { mark: true }));
+    if (applied) add(map, 9, 1, ev('9月', 'me', 'me', '新しい標準報酬月額を適用 (9月分から)', 0, 1, { mark: true }));
   };
   const notices = map => {
     add(map, 4, 1, ev('4月頃', 'gov', 'me', '国民年金保険料の納付書', 0, 1, { paper: true }));
     add(map, 6, 1, ev('6月頃', 'gov', 'me', '国民健康保険料の納入通知書', 0, 1, { paper: true }));
   };
   if (c.hasSS) {
-    // 7 月 1 日に在籍している人が対象。6 月 1 日以降の資格取得と 6 月 30 日以前の退職は除く
-    if ((!c.start || c.start <= 5) && (!c.end || c.end >= 7)) santei(soc);
-    if (!c.end) santei(socNext);
+    // 7 月 1 日に在籍している人が対象。6 月 1 日以降の資格取得と 6 月 30 日以前の退職は除く。9 月より前に辞めると新しい額は使わない
+    if ((!c.start || c.start <= 5) && (!c.end || c.end >= 7)) santei(soc, !c.end || c.end >= 9);
+    if (!c.end) santei(socNext, true);
   } else if (c.amt) {
     if (!c.start && (!c.end || c.end >= 6)) notices(soc);
     if (!c.end) notices(socNext);
@@ -697,7 +726,7 @@ function syncSeg() {
   $('k-l').disabled = state.corp !== 'llc';
   $('k-k').disabled = state.corp !== 'kk';
   document.querySelectorAll('.seg').forEach(g => {
-    const v = String(state[g.dataset.k]);
+    const v = String(g.dataset.k === 'toku' && !small(state) ? 0 : state[g.dataset.k]);
     g.querySelectorAll('input').forEach(i => { i.checked = i.value === v; });
   });
 }
@@ -761,7 +790,7 @@ const QUERY = [
   ['toku', 'toku', v => intIn(v, 0, 1)],
   ['cur', 'cur', v => intIn(v, 0, 1)],
   ['exp', 'exp', v => intIn(v, 0, 90)],
-  ['src', 'src', v => intIn(v, 0, 1)],
+  ['src', 'src', v => intIn(v, 0, 2)],
   ['tk', 'tk', v => intIn(v, 0, 1)],
   ['fil', 'fil', v => intIn(v, 0, 1)],
 ];
