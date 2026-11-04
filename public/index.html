@@ -16,12 +16,6 @@ img { max-width: 100% }
   --body: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
   --num: "BIZ UDGothic", "Hiragino Sans", monospace;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0f1a16; --panel: #16241f; --fg: #e4efe9; --muted: #93aca2; --rule: #36514a; --soft: #20332c;
-  --pay: #5ccfa6; --gov: #f0857c; --ins: #e6b450; --labor: #84aee0; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0f1a16; --panel: #16241f; --fg: #e4efe9; --muted: #93aca2; --rule: #36514a; --soft: #20332c;
-  --pay: #5ccfa6; --gov: #f0857c; --ins: #e6b450; --labor: #84aee0; color-scheme: dark }
 * { box-sizing: border-box }
 body { background: var(--bg); color: var(--fg); font-family: var(--body); line-height: 1.6;
   padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
