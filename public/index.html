@@ -514,8 +514,7 @@ function arrow(e) {
   return `<div class="lab" style="left:${left}%;width:${w}%">${e.label}${e.info ? `<span class="info" tabindex="0" role="img" aria-label="${e.info}">i<span class="tip" aria-hidden="true">${e.info}</span></span>` : ''}${e.after || ''}${money}</div>
     <div class="arr ${dir} ${tone}${e.paper ? ' paper' : ''}" style="left:${left}%;width:${w}%;opacity:${op}" aria-hidden="true"></div>`;
 }
-// 図の「今年」。月の行は #tax-2027-01 (節・年・月) で指せる
-const YEAR = 2026;
+// 月の行は #tax-next-01 (節・今年 current か翌年 next か・月) で指せる
 function seq(key, cols, byMonth, next = {}, repeats = false) {
   const block = (map, m, year) => {
     const list = (map[m] || []).sort((x, y) => x.sort - y.sort);
@@ -523,8 +522,8 @@ function seq(key, cols, byMonth, next = {}, repeats = false) {
       : `<div class="row empty"><div></div><div class="lanes"></div></div>`;
     return `<div class="month" id="${key}-${year}-${String(m).padStart(2, '0')}"><div class="mlabel">${m}月</div><div class="rows">${rows}</div></div>`;
   };
-  const months = MONTHS.map(m => block(byMonth, m, YEAR)).join('');
-  const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m, YEAR + 1)).join('');
+  const months = MONTHS.map(m => block(byMonth, m, 'current')).join('');
+  const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m, 'next')).join('');
   const tail = nextMonths ? `<div class="sep">翌年（毎月分除く）</div>${nextMonths}${repeats ? '<div class="sep">翌々年以降も同じ作業が毎年続きます</div>' : ''}` : '';
   return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c.split('・')[0]] || ''}${c.replace('・', '・<wbr>')}</span>`).join('')}</div></div>${months}${tail}</div>`;
 }

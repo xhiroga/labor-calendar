@@ -4,6 +4,6 @@
 
 `public/index.html` をブラウザで開くと動きます。ビルドは要りません。Cloudflare Workers の静的配信で公開します (`npx wrangler deploy`)。
 
-URL の `#` で節 (`tax` / `soc` / `lab`)・年・月の行を指せます。例: `?work=contractor&src=2#tax-2027-01`。図の「今年」は 2026、「翌年」は 2027 です。
+URL の `#` で節 (`tax` / `soc` / `lab`)・今年か翌年か (`current` / `next`)・月の行を指せます。例: `?work=contractor&src=2#tax-next-01`。
 
 金額は概算です。計算の前提と出典はページ下部の「計算の前提と出典」にあります。実際の手続きは税理士、社労士、窓口で確認してください。
