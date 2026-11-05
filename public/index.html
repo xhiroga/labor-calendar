@@ -10,9 +10,10 @@
 body { margin: 0; font-size: 14px }
 img { max-width: 100% }
 /* Layout: 帳票の罫線に載せた縦 3 列のシーケンス図を、月ごとのブロックで 12 段積む */
+/* --ins は日本年金機構のロゴの色、--labor は東京労働局のマークの緑。--tax と --local は税を青の濃淡でまとめる */
 :root {
   --bg: #f4f8f5; --panel: #ffffff; --fg: #14241e; --muted: #557066; --rule: #bdd3c7; --soft: #e3eee8;
-  --pay: #0b6b4f; --gov: #b5322a; --local: #7b4fa3; --ins: #c98a12; --labor: #3b6ea8;
+  --pay: #0b6b4f; --gov: #b5322a; --tax: #2b4c9b; --local: #6b9bd8; --ins: #e8340c; --labor: #58b078;
   --body: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
   --num: "BIZ UDGothic", "Hiragino Sans", monospace;
 }
@@ -43,8 +44,10 @@ h2 { font-size: 19px; margin: 0 }
 select:focus-visible { outline: 2px solid var(--pay); outline-offset: 2px }
 select, input[type=number] { width: 100%; font: 16px var(--num); padding: 5px 8px; background: var(--bg); color: var(--fg); border: 1px solid var(--rule) }
 
-.summary { display: grid; gap: 8px }
-.bar { display: flex; height: 22px; background: var(--soft) }
+.summary { display: grid; gap: 16px }
+.burden { display: grid; gap: 6px }
+.burden h3 { font-size: 14px; margin: 0 }
+.bar { display: flex; gap: 2px; height: 22px }
 .bar i { display: block; min-width: 0 }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; margin: 0; padding: 0; list-style: none }
 .legend li { display: flex; align-items: center; gap: 6px }
@@ -188,8 +191,8 @@ a { color: inherit }
 
   <div class="summary" aria-live="polite">
     <h2 id="sumTitle"></h2>
-    <div class="bar" id="bar"></div>
-    <ul class="legend" id="legend"></ul>
+    <div class="burden" id="payerBurden"></div>
+    <div class="burden" id="payeeBurden"></div>
   </div>
 
   <section>
@@ -876,16 +879,24 @@ function render() {
 
   // まとめ
   $('sumTitle').innerHTML = `${emp ? '額面' : '売上'} 年 <span class="num">${yen(c.year)}</span> の行き先`;
-  const parts = [
+  // 2 本の棒は同じ尺度 (額面に対する %) で描く。手元に残る額は負担に数えない
+  const burden = (id, who, total, parts) => {
+    $(id).innerHTML = `<h3>${who} <span class="num">${yen(total)}</span></h3>`
+      + (parts.length ? `<div class="bar">${parts.filter(p => p[1] > 0).map(p => `<i title="${p[0]} ${yen(p[1])}" style="width:${c.year ? p[1] / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('')}</div>`
+        + `<ul class="legend">${parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')}</ul>` : '');
+  };
+  const payerLabor = Math.max(0, c.laborY - c.koyoY);
+  burden('payerBurden', '支払側負担', emp ? c.companySs + payerLabor : 0, emp ? [
+    ['社会保険', c.companySs, 'var(--ins)'],
+    ['労働保険', payerLabor, 'var(--labor)'],
+  ] : []);
+  burden('payeeBurden', '受取側負担', c.year - c.net, [
     [emp ? '手元に残る額' : '手元に残る額 (経費込み)', c.net, 'var(--pay)'],
-    ['所得税', c.finalTax, 'var(--gov)'],
+    ['所得税', c.finalTax, 'var(--tax)'],
     [emp ? '住民税' : '住民税・個人事業税', c.juminY + c.jigyoPrev, 'var(--local)'],
     ['社会保険', c.ssY + c.nationalY, 'var(--ins)'],
     ['労働保険', c.koyoY + c.tokuY, 'var(--labor)'],
-  ];
-  $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? Math.max(0, p[1]) / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
-  $('legend').innerHTML = parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')
-    + (emp ? `<li>会社が別に負担 <span class="num">${yen(Math.max(0, c.companySs + c.laborY - c.koyoY))}</span></li>` : '');
+  ]);
   markTarget();
 }
 // URL の # が指す月の行に印を付ける。描き直すと印が消えるので render でも呼ぶ
