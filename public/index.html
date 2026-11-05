@@ -63,7 +63,9 @@ section { display: grid; gap: 10px; min-width: 0 }
 .cols span { word-break: keep-all }
 .cols span:first-child { visibility: hidden }
 .ico { width: 14px; height: 14px; margin-right: 4px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round }
-.month { border-top: 1px solid var(--rule) }
+.month { border-top: 1px solid var(--rule); scroll-margin-top: 88px }
+.month.target { outline: 2px solid var(--fg); outline-offset: -1px }
+.month.target .mlabel { background: var(--fg); color: var(--panel) }
 .head + .month { border-top: 0 }
 .mlabel { font: 700 13px var(--num); text-align: center; padding-top: 8px; background: var(--soft) }
 .rows { display: grid; min-width: 0 }
@@ -512,15 +514,17 @@ function arrow(e) {
   return `<div class="lab" style="left:${left}%;width:${w}%">${e.label}${e.info ? `<span class="info" tabindex="0" role="img" aria-label="${e.info}">i<span class="tip" aria-hidden="true">${e.info}</span></span>` : ''}${e.after || ''}${money}</div>
     <div class="arr ${dir} ${tone}${e.paper ? ' paper' : ''}" style="left:${left}%;width:${w}%;opacity:${op}" aria-hidden="true"></div>`;
 }
-function seq(cols, byMonth, next = {}, repeats = false) {
-  const block = (map, m) => {
+// 図の「今年」。月の行は #tax-2027-01 (節・年・月) で指せる
+const YEAR = 2026;
+function seq(key, cols, byMonth, next = {}, repeats = false) {
+  const block = (map, m, year) => {
     const list = (map[m] || []).sort((x, y) => x.sort - y.sort);
     const rows = list.length ? list.map(e => `<div class="row${e.label.length / (Math.abs(COL[e.from] - COL[e.to]) || 33) > .3 ? ' tall' : ''}"><div class="date">${e.date}</div><div class="lanes">${arrow(e)}</div></div>`).join('')
       : `<div class="row empty"><div></div><div class="lanes"></div></div>`;
-    return `<div class="month"><div class="mlabel">${m}月</div><div class="rows">${rows}</div></div>`;
+    return `<div class="month" id="${key}-${year}-${String(m).padStart(2, '0')}"><div class="mlabel">${m}月</div><div class="rows">${rows}</div></div>`;
   };
-  const months = MONTHS.map(m => block(byMonth, m)).join('');
-  const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m)).join('');
+  const months = MONTHS.map(m => block(byMonth, m, YEAR)).join('');
+  const nextMonths = MONTHS.filter(m => next[m]).map(m => block(next, m, YEAR + 1)).join('');
   const tail = nextMonths ? `<div class="sep">翌年（毎月分除く）</div>${nextMonths}${repeats ? '<div class="sep">翌々年以降も同じ作業が毎年続きます</div>' : ''}` : '';
   return `<div class="seq"><div class="head"><div class="cols"><span></span>${cols.map(c => `<span>${ICONS[c.split('・')[0]] || ''}${c.replace('・', '・<wbr>')}</span>`).join('')}</div></div>${months}${tail}</div>`;
 }
@@ -716,7 +720,7 @@ function render() {
     }
     if (c.end && c.juminNext) selfPay(taxNext, null, c.juminNext);
   }
-  $('seqTax').innerHTML = seq([payer, me, '税務署・市区町村'], tax, taxNext, !c.end);
+  $('seqTax').innerHTML = seq('tax', [payer, me, '税務署・市区町村'], tax, taxNext, !c.end);
   $('taxNote').textContent = emp
     ? c.w
       ? `年税額 ${yen(c.finalTax)}。毎月 ${yen(c.w)} を会社が差し引いて納めます (税額表で決まる額で、率は固定ではありません)。`
@@ -756,7 +760,7 @@ function render() {
     // 7 月以降の開始は、今年度の分が翌年の年度更新に初めて載る
     const carried = c.start >= 7 ? (c.end || 15) - c.start + 1 : 0, future = c.end ? 0 : 12;
     if (carried + future) add(labNext, 7, 10, ev('10日', 'co', 'gov', '特別加入の保険料 (事務組合経由)', Math.round(10950 * (carried + future) / 12), c.fullYear));
-    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext, !c.end);
+    $('seqLab').innerHTML = seq('lab', [payer, me, '労働局'], lab, labNext, !c.end);
     $('labNote').textContent = '給付基礎日額1万円の例で年 10,950円。雇用保険はありません。従業員の分の労働保険は別に納めます。';
   } else if (s.labTab === 'tokubetsu') {
     const lab = {};
@@ -766,7 +770,7 @@ function render() {
     const labNext = {};
     if (lastPayNext) add(labNext, 1, 25, ev('25日', 'co', 'me', '報酬', c.amt, c.amt));
     if (!c.end) add(labNext, 4, 10, ev('4月頃', 'me', 'gov', '特別加入の保険料 (団体経由)', 10950, c.fullYear));
-    $('seqLab').innerHTML = seq([payer, me, '労働局'], lab, labNext, !c.end);
+    $('seqLab').innerHTML = seq('lab', [payer, me, '労働局'], lab, labNext, !c.end);
     $('labNote').textContent = '保険料は全額が本人負担です。給付基礎日額1万円の例で年 10,950円。団体の会費は別にかかります。雇用保険はありません。';
   } else {
     const withKoyo = s.labTab === 'both';
@@ -797,7 +801,7 @@ function render() {
       const carried = c.start >= 7 ? (c.end || 15) - c.start + 1 : 0, future = c.end ? 0 : 12;
       if (carried + future) add(labNext, 7, 10, ev('10日', 'co', 'gov', carried ? `年度更新で今年度の${carried}か月分${future ? ' + 翌年度分' : ''}を納付` : '年度更新で1年分を納付', Math.round(c.amt * (carried + future) * ((withKoyo ? 1.35 : 0) + .3) / 100), c.fullYear));
     }
-    $('seqLab').innerHTML = seq([payer, me, withKoyo ? '労働局・ハローワーク' : '労働局'], lab, labNext, !c.end);
+    $('seqLab').innerHTML = seq('lab', [payer, me, withKoyo ? '労働局・ハローワーク' : '労働局'], lab, labNext, !c.end);
     $('labNote').textContent = withKoyo
       ? `年 ${yen(koyoY)} が本人負担の雇用保険です。労災保険は全額を会社が払います。`
       : '雇用保険には入りません。労災保険は全額を会社が払います。';
@@ -866,7 +870,7 @@ function render() {
     if (MONTHS.some(m => m <= 9 && c.nenkin(m))) pensionProof(soc);
     if (!c.end) { notices(socNext); pensionProof(socNext); }
   }
-  $('seqSoc').innerHTML = seq([payer, me, c.hasSS ? '年金事務所・市区町村' : '年金機構・市区町村'], soc, socNext, !c.end);
+  $('seqSoc').innerHTML = seq('soc', [payer, me, c.hasSS ? '年金事務所・市区町村' : '年金機構・市区町村'], soc, socNext, !c.end);
   $('socNote').textContent = c.hasSS
     ? `健康保険と厚生年金に入り、会社と折半します。本人 年 ${yen(c.ssY)}、会社 年 ${yen(c.companySs)} (子ども・子育て拠出金を含む)。`
     : `会社の社会保険に入らないので、国民年金と国民健康保険を自分で払います。年 ${yen(c.nationalY)} (国保は目安)。`;
@@ -883,6 +887,14 @@ function render() {
   $('bar').innerHTML = parts.map(p => `<i style="width:${c.year ? Math.max(0, p[1]) / c.year * 100 : 0}%;background:${p[2]}"></i>`).join('');
   $('legend').innerHTML = parts.map(p => `<li><b style="background:${p[2]}"></b>${p[0]} <span class="num">${yen(p[1])}</span></li>`).join('')
     + (emp ? `<li>会社が別に負担 <span class="num">${yen(Math.max(0, c.companySs + c.laborY - c.koyoY))}</span></li>` : '');
+  markTarget();
+}
+// URL の # が指す月の行に印を付ける。描き直すと印が消えるので render でも呼ぶ
+function markTarget() {
+  document.querySelectorAll('.month.target').forEach(el => el.classList.remove('target'));
+  const el = document.getElementById(location.hash.slice(1));
+  if (el && el.classList.contains('month')) el.classList.add('target');
+  return el;
 }
 
 function syncSeg() {
@@ -981,10 +993,12 @@ function writeQuery() {
   QUERY.forEach(([name, key]) => { if (state[key] !== DEFAULTS[key]) q.set(name, state[key]); });
   if (state.labTab !== matchLab(state)) q.set('lab', state.labTab);
   const search = q.toString();
-  try { history.replaceState(null, '', search ? `?${search}` : location.pathname); } catch { /* file:// など書き換えできない環境では何もしない */ }
+  try { history.replaceState(null, '', (search ? `?${search}` : location.pathname) + location.hash); } catch { /* file:// など書き換えできない環境では何もしない */ }
 }
 readQuery();
 sync(); render();
+markTarget()?.scrollIntoView();
+addEventListener('hashchange', () => markTarget()?.scrollIntoView());
 </script>
 </body>
 </html>
